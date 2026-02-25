@@ -162,7 +162,6 @@ in {
     home.packages = [
       ccgoScript
       ocgoScript
-      pkgs-unstable.opencode
     ] ++ lib.optionals pkgs.stdenv.isDarwin [
       claude-unlock
     ];
@@ -242,3 +241,4 @@ in {
       opencodeTgnotifyPlugin;
   };
 }
+
