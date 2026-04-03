@@ -1,5 +1,0 @@
-{
-  "name": "dev-stuff",
-  "description": "Development utilities: systemd service deployment with smdctl, and other dev-ops tools",
-  "version": "1.0.0"
-}

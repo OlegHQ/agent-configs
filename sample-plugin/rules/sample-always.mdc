@@ -1,0 +1,8 @@
+---
+description: Sample rule that always applies (debug plugin structure)
+alwaysApply: true
+---
+
+# Sample always-on rule
+
+Use this to verify **alwaysApply** rules load from the plugin. Content is intentionally minimal.

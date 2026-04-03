@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "./scripts/hook-noop.sh"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "./scripts/hook-matcher.sh",
+        "matcher": "rm|curl|wget"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "./scripts/hook-session-end.sh"
+      }
+    ]
+  }
+}

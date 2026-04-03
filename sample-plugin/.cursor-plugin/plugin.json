@@ -1,0 +1,14 @@
+{
+  "name": "sample-plugin",
+  "version": "0.1.0",
+  "description": "Reference plugin covering Cursor plugin layout: rules, skills, agents, commands, hooks, MCP, assets. For local and agentpack debugging.",
+  "author": {
+    "name": "agent-configs maintainers",
+    "email": "devnull@example.com"
+  },
+  "homepage": "https://github.com/example/agent-configs",
+  "repository": "https://github.com/example/agent-configs",
+  "license": "MIT",
+  "keywords": ["sample", "debug", "cursor-plugin", "agentpack"],
+  "logo": "assets/logo.svg"
+}

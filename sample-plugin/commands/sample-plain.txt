@@ -1,0 +1,3 @@
+Plain-text command body (no frontmatter).
+Cursor discovers .txt under commands/ per plugins reference.
+Used only for layout / discovery testing.

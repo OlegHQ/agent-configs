@@ -1,0 +1,9 @@
+---
+description: Sample rule scoped to TypeScript files (globs + not always on)
+alwaysApply: false
+globs: "**/*.ts"
+---
+
+# Sample glob-scoped rule
+
+When working under matching globs, prefer explicit return types on exported functions.

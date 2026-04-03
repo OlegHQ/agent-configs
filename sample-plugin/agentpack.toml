@@ -1,0 +1,9 @@
+# Nested agentpack package (optional transitive deps for debugging agentpack lock resolution).
+# Add entries under [dependencies] to exercise nested resolution from this cache root.
+
+name = "sample-plugin"
+version = "0.1.0"
+
+[dependencies]
+# Example (uncomment to test nested pulls):
+# "github.com/anthropics/skills/skills/document-skills" = { branch = "main" }
