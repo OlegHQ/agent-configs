@@ -1,0 +1,6 @@
+{"eval_id":1,"run_type":"without_skill","expectations":[
+{"text":"validator_trait","passed":true,"evidence":"Validator trait with validate(&self, value: &str) -> Option<String>. Multiple built-in rules as separate structs. Same architecture as with-skill."},
+{"text":"composable_rules","passed":true,"evidence":"FieldRules holds Vec<Box<dyn Validator>>, iterates all, collects all errors."},
+{"text":"each_rule_owns_params","passed":true,"evidence":"Each rule owns its params. Also includes custom(closure) for one-off inline rules — nice ergonomic touch."},
+{"text":"adding_rule_is_isolated","passed":true,"evidence":"Trait-based, adding new rule is just new struct + impl. No modifications needed."}
+]}

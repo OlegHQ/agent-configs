@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "run_type": "without_skill",
+  "expectations": [
+    {"text": "reader_abstraction", "passed": false, "evidence": "Reading uses free functions (read_csv, read_json, read_yaml) dispatched via match on Format enum in read_table(). No trait abstraction — adding a new format requires: 1) new enum variant, 2) new free function, 3) new match arm in read_table(). Three places to modify for one new format."},
+    {"text": "transform_abstraction", "passed": false, "evidence": "Transforms are an enum Transform { Filter(String), Sort(String), Rename(String), AddColumn(String) } with a single fn apply_transform(table: &mut Table, t: &Transform) -> Result<()> containing match arms. Adding a new transform requires: 1) new enum variant, 2) new match arm in apply_transform. NOT separate types with a common trait."},
+    {"text": "pipeline_composition", "passed": true, "evidence": "Transforms collected into Vec<Transform> and applied in order. The pipeline is composable, just using enum variants instead of trait objects."},
+    {"text": "format_agnostic_core", "passed": true, "evidence": "Table struct (columns + rows as Vec<Vec<String>>) is the internal representation. Reading and writing are separate from transforms. Core is format-agnostic."}
+  ]
+}

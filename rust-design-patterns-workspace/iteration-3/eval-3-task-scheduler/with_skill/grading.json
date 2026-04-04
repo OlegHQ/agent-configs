@@ -1,0 +1,6 @@
+{"eval_id":3,"run_type":"with_skill","expectations":[
+{"text":"executor_trait","passed":true,"evidence":"TaskExecutor trait. Four impls: ShellExecutor, HttpExecutor, DockerExecutor, ClosureExecutor. Trait-based, not enum."},
+{"text":"executor_owns_config","passed":true,"evidence":"Each executor holds its own config. ShellExecutor{command}, HttpExecutor{url,method,headers}, DockerExecutor{image,env,cmd}."},
+{"text":"scheduler_decoupled_from_executors","passed":true,"evidence":"Scheduler works with Box<dyn TaskExecutor>. No knowledge of specific executor types. Also uses Decorator pattern: RetryExecutor wraps any executor to add retry transparently."},
+{"text":"adding_executor_isolated","passed":true,"evidence":"Adding K8sExecutor = new struct + impl TaskExecutor. Scheduler, retry, timeout, existing executors all untouched. RetryExecutor wraps any new executor automatically via builder."}
+]}

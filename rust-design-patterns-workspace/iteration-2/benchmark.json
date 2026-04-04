@@ -1,0 +1,86 @@
+{
+  "skill_name": "rust-design-patterns",
+  "iteration": 2,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {
+          "eval_name": "notification-system",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 22799,
+          "duration_seconds": 92.2
+        },
+        {
+          "eval_name": "cli-data-tool",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 25939,
+          "duration_seconds": 234.8
+        },
+        {
+          "eval_name": "ecs-game",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 27041,
+          "duration_seconds": 113.2
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "stddev_pass_rate": 0.0,
+        "mean_tokens": 25260,
+        "stddev_tokens": 1780,
+        "mean_duration_seconds": 146.7,
+        "stddev_duration_seconds": 62.0
+      }
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {
+          "eval_name": "notification-system",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 12210,
+          "duration_seconds": 53.4
+        },
+        {
+          "eval_name": "cli-data-tool",
+          "assertions_passed": 2,
+          "assertions_total": 4,
+          "pass_rate": 0.5,
+          "tokens": 17890,
+          "duration_seconds": 200.4
+        },
+        {
+          "eval_name": "ecs-game",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 14540,
+          "duration_seconds": 74.0
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 0.833,
+        "stddev_pass_rate": 0.236,
+        "mean_tokens": 14880,
+        "stddev_tokens": 2335,
+        "mean_duration_seconds": 109.3,
+        "stddev_duration_seconds": 64.8
+      }
+    }
+  ],
+  "delta": {
+    "pass_rate_diff": 0.167,
+    "tokens_diff_percent": 69.8,
+    "duration_diff_percent": 34.2
+  },
+  "analysis": "The skill produces a measurable difference on Eval 2 (CLI data tool). WITHOUT the skill, Claude defaults to free functions + enum variants for readers/transforms — a pattern that requires modifying existing code for every new format or transform. WITH the skill, it uses DataSource/DataSink/Transform traits where each variant is an independent type. Evals 1 and 3 show no difference — Claude's baseline already handles Observer and ECS patterns well. The skill's value is most visible on 'pipeline/multi-concern' tasks where the naive approach is functional but not extensible. The with-skill version uses ~70% more tokens due to reading skill + reference files."
+}

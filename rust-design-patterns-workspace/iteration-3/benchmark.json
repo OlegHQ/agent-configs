@@ -1,0 +1,30 @@
+{
+  "skill_name": "rust-design-patterns",
+  "iteration": 3,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {"eval_name": "validation-lib", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 20122, "duration_seconds": 123.9},
+        {"eval_name": "log-processing", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 28221, "duration_seconds": 127.2},
+        {"eval_name": "task-scheduler", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 20444, "duration_seconds": 215.8}
+      ],
+      "aggregate": {"mean_pass_rate": 1.0, "stddev_pass_rate": 0.0, "mean_tokens": 22929, "stddev_tokens": 3729, "mean_duration_seconds": 155.6, "stddev_duration_seconds": 42.0}
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {"eval_name": "validation-lib", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 15546, "duration_seconds": 184.0},
+        {"eval_name": "log-processing", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 20544, "duration_seconds": 244.9},
+        {"eval_name": "task-scheduler", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0, "tokens": 16738, "duration_seconds": 196.9}
+      ],
+      "aggregate": {"mean_pass_rate": 1.0, "stddev_pass_rate": 0.0, "mean_tokens": 17609, "stddev_tokens": 2157, "mean_duration_seconds": 208.6, "stddev_duration_seconds": 26.3}
+    }
+  ],
+  "delta": {
+    "pass_rate_diff": 0.0,
+    "tokens_diff_percent": 30.2,
+    "duration_diff_percent": -25.4
+  },
+  "analysis": "Both configurations pass all assertions at 100%. The trimmed skill costs only 30% more tokens (down from 70% in iteration 2). Notably, with-skill runs were FASTER on average (-25%) despite more tokens — likely because the skill's upfront analysis reduces backtracking. Quantitative assertions show no difference because these prompts explicitly signal extensibility ('we'll add more', 'constantly as business requirements change'). The qualitative differences are real but subtle: (1) with-skill uses Decorator pattern for RetryExecutor instead of embedding retry in the scheduler loop, (2) with-skill correctly names GoF patterns in comments (Strategy, Chain of Responsibility, Decorator), (3) with-skill applies the 'closed set = enum, open set = trait' distinction explicitly (TaskStatus enum vs TaskExecutor trait). The skill's highest value appears on prompts that DON'T signal extensibility — like the iteration-2 CLI tool eval where the baseline used enum+match."
+}

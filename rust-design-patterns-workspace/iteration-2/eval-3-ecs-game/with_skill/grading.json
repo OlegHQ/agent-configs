@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "run_type": "with_skill",
+  "expectations": [
+    {"text": "component_storage_scalable", "passed": true, "evidence": "ComponentStore with HashMap<TypeId, ComponentMap> where ComponentMap = HashMap<EntityId, Box<dyn Any>>. Fully type-erased. Adding a component type has zero structural impact."},
+    {"text": "system_trait", "passed": true, "evidence": "System trait with run(&self, world: &mut World). Four implementations: MovementSystem, RenderSystem, DamageSystem, AiSystem. Scheduler holds Vec<Box<dyn System>>."},
+    {"text": "component_queries", "passed": true, "evidence": "World has generic query methods (query_2, query_3) that return only entities matching component combinations. Systems don't know about unrelated components."},
+    {"text": "adding_component_isolated", "passed": true, "evidence": "Newtype EntityId(u64) for safety. Components are plain structs — adding one requires no changes to World, ComponentStore, or existing systems."}
+  ]
+}

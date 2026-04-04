@@ -1,0 +1,27 @@
+{
+  "eval_id": 1,
+  "eval_name": "tcp-state-refactor",
+  "prompt": "I have this Rust code for a TCP connection handler that uses a big match statement to handle different states. It's getting unwieldy — every time I add a new state I have to touch 4 different match arms scattered across the file. Can you refactor it to be more maintainable?",
+  "assertions": [
+    {
+      "name": "eliminates_string_state",
+      "description": "Replaces string-based state ('disconnected', etc.) with typed states (enum variants or separate structs)",
+      "type": "llm_judge"
+    },
+    {
+      "name": "explains_pattern_choice",
+      "description": "Explains WHY the chosen pattern (State vs enum FSM) is appropriate for this specific case, with tradeoffs",
+      "type": "llm_judge"
+    },
+    {
+      "name": "compiles_or_near_compiles",
+      "description": "The refactored code is syntactically valid Rust that would compile (or nearly compile) — not pseudocode",
+      "type": "llm_judge"
+    },
+    {
+      "name": "handles_all_original_states",
+      "description": "All 4 states (disconnected, connecting, connected, error) and their events are preserved in the refactored code",
+      "type": "llm_judge"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "cli-data-tool",
+  "prompt": "Build a CLI data processing tool supporting CSV/JSON/YAML read/write with composable transforms (filter, sort, rename, computed columns).",
+  "assertions": [
+    {"name": "reader_abstraction", "description": "Input reading behind a trait so new formats are just new impls", "type": "llm_judge"},
+    {"name": "transform_abstraction", "description": "Each transform is a separate type implementing a common trait, NOT enum branches", "type": "llm_judge"},
+    {"name": "pipeline_composition", "description": "Transforms composed into Vec<Box<dyn Transform>> or similar extensible pipeline", "type": "llm_judge"},
+    {"name": "format_agnostic_core", "description": "Core model decoupled from file formats — reading/writing at boundaries", "type": "llm_judge"}
+  ]
+}

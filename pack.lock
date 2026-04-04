@@ -1,0 +1,26 @@
+lockfile_version = 2
+
+[meta]
+name = "agent-configs"
+version = "0.0.1"
+
+[[packages]]
+module = "github.com/anthropics/skills/skills/skill-creator"
+direct = true
+kind = "skill"
+url = "https://github.com/anthropics/skills/tree/HEAD/skills/skill-creator"
+owner = "anthropics"
+repo = "skills"
+path = "skills/skill-creator"
+commit = "98669c11ca63e9c81c11501e1437e5c47b556621"
+cache_key = "88310e0439693e305a5d49a5b4ac8c9feab246dc7e8ee5e791c0b6fa6a1a4b40"
+name = ""
+
+[[skills]]
+module = "github.com/anthropics/skills/skills/skill-creator"
+url = "https://github.com/anthropics/skills/tree/HEAD/skills/skill-creator"
+owner = "anthropics"
+repo = "skills"
+path = "skills/skill-creator"
+commit = "98669c11ca63e9c81c11501e1437e5c47b556621"
+cache_key = "88310e0439693e305a5d49a5b4ac8c9feab246dc7e8ee5e791c0b6fa6a1a4b40"

@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "eval_name": "ecs-game",
+  "prompt": "Build an ECS for a game with Position, Velocity, Health, Sprite, Collider, AI components and systems that process specific combinations.",
+  "assertions": [
+    {"name": "component_storage_scalable", "description": "Type-erased storage (Any/TypeId), NOT Entity struct with Option<T> per component", "type": "llm_judge"},
+    {"name": "system_trait", "description": "Systems implement a trait, extensible without modifying ECS core", "type": "llm_judge"},
+    {"name": "component_queries", "description": "Way to query entities by component combination without knowing unrelated components", "type": "llm_judge"},
+    {"name": "adding_component_isolated", "description": "New component type doesn't require modifying World/ECS, existing components, or systems", "type": "llm_judge"}
+  ]
+}

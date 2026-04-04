@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "image-pipeline",
+  "prompt": "I'm building an image processing pipeline in Rust. Users should be able to chain filters like resize, blur, sharpen, grayscale, rotate, etc. New filters will be added frequently by different team members. How should I restructure this?",
+  "assertions": [
+    {
+      "name": "introduces_trait",
+      "description": "Creates a Filter/Transform trait that each filter implements, replacing the string-based match dispatch",
+      "type": "llm_judge"
+    },
+    {
+      "name": "type_safe_params",
+      "description": "Each filter type carries its own parameters as fields rather than indexing into a shared params array",
+      "type": "llm_judge"
+    },
+    {
+      "name": "composable_pipeline",
+      "description": "Shows how to chain/compose filters — Vec<Box<dyn Filter>>, iterator pipeline, or similar composition mechanism",
+      "type": "llm_judge"
+    },
+    {
+      "name": "names_pattern",
+      "description": "Identifies which design pattern(s) are being applied and briefly explains why they fit this use case",
+      "type": "llm_judge"
+    }
+  ]
+}

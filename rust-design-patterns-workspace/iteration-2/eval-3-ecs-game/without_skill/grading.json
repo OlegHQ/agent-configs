@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "run_type": "without_skill",
+  "expectations": [
+    {"text": "component_storage_scalable", "passed": true, "evidence": "HashMap<TypeId, HashMap<usize, Box<dyn Component>>> storage. Type-erased via Component trait + Any. impl_component! macro for registration. Scalable."},
+    {"text": "system_trait", "passed": true, "evidence": "System trait with run(&self, world: &mut World). Four system implementations. Scheduler with Vec<Box<dyn System>>."},
+    {"text": "component_queries", "passed": true, "evidence": "World::query method accepts a slice of TypeIds, returns entities matching all. Systems use this to query by component combination."},
+    {"text": "adding_component_isolated", "passed": true, "evidence": "Adding Pickup component demonstrated in main() with impl_component! macro. No changes to World or existing systems. Entity uses generation counter for stale handle detection (nice touch)."}
+  ]
+}

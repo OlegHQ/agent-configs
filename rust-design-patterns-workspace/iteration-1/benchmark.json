@@ -1,0 +1,86 @@
+{
+  "skill_name": "rust-design-patterns",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {
+          "eval_name": "tcp-state-refactor",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 17773,
+          "duration_seconds": 63.8
+        },
+        {
+          "eval_name": "image-pipeline",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 18606,
+          "duration_seconds": 77.9
+        },
+        {
+          "eval_name": "report-architecture",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 21629,
+          "duration_seconds": 115.1
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "stddev_pass_rate": 0.0,
+        "mean_tokens": 19336,
+        "stddev_tokens": 1634,
+        "mean_duration_seconds": 85.6,
+        "stddev_duration_seconds": 21.7
+      }
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {
+          "eval_name": "tcp-state-refactor",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 11925,
+          "duration_seconds": 42.7
+        },
+        {
+          "eval_name": "image-pipeline",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 12175,
+          "duration_seconds": 49.0
+        },
+        {
+          "eval_name": "report-architecture",
+          "assertions_passed": 4,
+          "assertions_total": 4,
+          "pass_rate": 1.0,
+          "tokens": 14563,
+          "duration_seconds": 82.0
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "stddev_pass_rate": 0.0,
+        "mean_tokens": 12888,
+        "stddev_tokens": 1156,
+        "mean_duration_seconds": 57.9,
+        "stddev_duration_seconds": 17.4
+      }
+    }
+  ],
+  "delta": {
+    "pass_rate_diff": 0.0,
+    "tokens_diff_percent": 50.0,
+    "duration_diff_percent": 47.8
+  },
+  "analysis": "Both configurations pass all assertions at 100%. The with-skill runs use ~50% more tokens and take ~48% longer due to reading the skill file and applying its structured evaluation workflow. However, qualitative differences are notable: with-skill outputs show more precise pattern identification (Strategy vs Command naming), structured tradeoff analysis, explicit dispatch choice reasoning, and references to Rust-specific idioms. The without-skill baseline produces correct code but with less rigorous pattern analysis and occasional pattern misidentification (e.g., calling Strategy 'Command')."
+}

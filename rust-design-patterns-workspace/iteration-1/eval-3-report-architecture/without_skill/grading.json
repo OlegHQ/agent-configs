@@ -1,0 +1,26 @@
+{
+  "eval_id": 3,
+  "run_type": "without_skill",
+  "expectations": [
+    {
+      "text": "identifies_correct_pattern",
+      "passed": true,
+      "evidence": "Identifies Strategy pattern via ReportFormatter trait. Also provides both static dispatch (ReportEngine<F>) and dynamic dispatch (generate_report_dynamic) approaches — showing good architectural thinking."
+    },
+    {
+      "text": "provides_concrete_code",
+      "passed": true,
+      "evidence": "Complete implementation with ReportFormatter trait, 4 formatters (PDF, CSV, HTML, JSON), both static and dynamic dispatch, factory function, tests. Well-structured and compilable."
+    },
+    {
+      "text": "shared_vs_varying_separation",
+      "passed": true,
+      "evidence": "Shared steps are free functions (fetch_data, transform_data). Varying steps are trait methods (format, write). Clear separation. Slightly different approach than Template Method — uses composition rather than default methods."
+    },
+    {
+      "text": "extensibility_explained",
+      "passed": true,
+      "evidence": "Explanation includes 3-step checklist for adding new formats. JsonFormatter included as demo. Notes that formatter_for() factory needs updating for dynamic dispatch (honest about this limitation)."
+    }
+  ]
+}

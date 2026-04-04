@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "run_type": "with_skill",
+  "expectations": [
+    {"text": "reader_abstraction", "passed": true, "evidence": "DataSource trait with read(&self, path) -> Result<DataFrame>. CsvSource, JsonSource, YamlSource as separate impls. source_for_format() factory function."},
+    {"text": "transform_abstraction", "passed": true, "evidence": "Transform trait with apply(self, df: DataFrame) -> Result<DataFrame>. Four separate structs: FilterTransform, SortTransform, RenameTransform, AddColumnTransform. Each owns its parameters. Adding a new transform = new struct + impl Transform."},
+    {"text": "pipeline_composition", "passed": true, "evidence": "Transforms collected into Vec<Box<dyn Transform>> and applied sequentially. Pipeline is data — can be serialized, logged, or reordered."},
+    {"text": "format_agnostic_core", "passed": true, "evidence": "DataFrame (columns + rows as HashMap<String, String>) is the internal representation. DataSource reads into DataFrame, transforms operate on DataFrame, DataSink writes from DataFrame. Complete decoupling."}
+  ]
+}

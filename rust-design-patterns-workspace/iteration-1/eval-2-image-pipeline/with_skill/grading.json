@@ -1,0 +1,26 @@
+{
+  "eval_id": 2,
+  "run_type": "with_skill",
+  "expectations": [
+    {
+      "text": "introduces_trait",
+      "passed": true,
+      "evidence": "ImageFilter trait with apply(&self, image: &mut Image) -> Result<(), FilterError> and name(&self) -> &str. All 5 filters implement it."
+    },
+    {
+      "text": "type_safe_params",
+      "passed": true,
+      "evidence": "Each filter owns its parameters: Resize{scale}, Blur{radius}, Sharpen{amount}, Rotate{degrees}. Grayscale is a unit struct (no params needed). No shared params array."
+    },
+    {
+      "text": "composable_pipeline",
+      "passed": true,
+      "evidence": "Pipeline struct with Vec<Box<dyn ImageFilter>> and builder-style add_filter(self, ...) -> Self chaining. execute() applies filters in order with ? error propagation."
+    },
+    {
+      "text": "names_pattern",
+      "passed": true,
+      "evidence": "Explanation explicitly identifies Strategy (trait-based variant) and Chain of Responsibility (Vec pipeline variant). Explains why dynamic dispatch is needed for heterogeneous pipeline. Also explains why Box<dyn> over generics, Result over panic."
+    }
+  ]
+}

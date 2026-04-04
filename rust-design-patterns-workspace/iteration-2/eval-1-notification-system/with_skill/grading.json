@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "run_type": "with_skill",
+  "expectations": [
+    {"text": "channel_trait", "passed": true, "evidence": "NotificationChannel trait with send() and channel_name(). Four implementations: EmailChannel, SlackChannel, SmsChannel, PushChannel."},
+    {"text": "event_to_channel_mapping", "passed": true, "evidence": "NotificationDispatcher with HashMap<Event, Vec<Box<dyn NotificationChannel>>>. register() and register_for_events() for routing. dispatch() fans out with DispatchReport collecting partial failures."},
+    {"text": "no_stringly_typed_events", "passed": true, "evidence": "Event enum with 4 variants: UserSignup, OrderPlaced, PaymentFailed, PasswordReset. Hash+Eq for HashMap keys."},
+    {"text": "adding_channel_is_isolated", "passed": true, "evidence": "Adding SMS demonstrated: implement NotificationChannel trait + call dispatcher.register(). No modifications to existing channels or dispatcher."}
+  ]
+}

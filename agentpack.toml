@@ -1,0 +1,8 @@
+# Agentpack project manifest — direct dependencies only. Run `agentpack lock` to refresh pack.lock.
+
+name = "agent-configs"
+version = "0.0.1"
+
+[dependencies]
+"github.com/anthropics/skills/skills/skill-creator" = {}
+# "github.com/owner/repo/path" = {}

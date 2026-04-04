@@ -1,0 +1,6 @@
+{"eval_id":1,"run_type":"with_skill","expectations":[
+{"text":"validator_trait","passed":true,"evidence":"ValidationRule trait with validate(&self, value: &str) -> Option<String>. 7 built-in rules as separate structs."},
+{"text":"composable_rules","passed":true,"evidence":"FieldRules holds Vec<Box<dyn ValidationRule>>, iterates all rules, collects all errors."},
+{"text":"each_rule_owns_params","passed":true,"evidence":"MinLength{min}, MaxLength{max}, NumericRange{min,max}, RegexRule{pattern}, etc. Each struct owns its config."},
+{"text":"adding_rule_is_isolated","passed":true,"evidence":"Test demonstrates custom ContainsUppercase rule composing with built-ins. Zero modifications to existing code."}
+]}

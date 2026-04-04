@@ -1,0 +1,26 @@
+{
+  "eval_id": 3,
+  "run_type": "with_skill",
+  "expectations": [
+    {
+      "text": "identifies_correct_pattern",
+      "passed": true,
+      "evidence": "Identifies Template Method as the primary pattern. Explanation explicitly compares against Strategy, Chain of Responsibility, and enum dispatch with clear reasoning for why Template Method fits best. Cites the skill's 'When to Apply' table."
+    },
+    {
+      "text": "provides_concrete_code",
+      "passed": true,
+      "evidence": "Complete Rust implementation with ReportGenerator trait, 4 concrete implementations (CSV, HTML, PDF, JSON), ReportEngine registry, tests, and main(). Over 500 lines of compilable code."
+    },
+    {
+      "text": "shared_vs_varying_separation",
+      "passed": true,
+      "evidence": "Clear separation: fetch_data and transform_data are default trait methods (shared). format() and write_output() are required methods (varying). The template method generate() orchestrates the fixed sequence."
+    },
+    {
+      "text": "extensibility_explained",
+      "passed": true,
+      "evidence": "Explanation includes 'How to Add a New Report Type' section. JsonReportGenerator included as a working demonstration. ReportEngine registry pattern enables runtime extensibility. Suggested file structure for production."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "notification-system",
+  "prompt": "Build a notification system for events (user signup, order placed, payment failed, password reset). Email now, Slack/SMS/push soon. Some events fan out to multiple channels.",
+  "assertions": [
+    {"name": "channel_trait", "description": "NotificationChannel trait for extensible channels", "type": "llm_judge"},
+    {"name": "event_to_channel_mapping", "description": "Events map to channels via registry, not hardcoded if/match", "type": "llm_judge"},
+    {"name": "no_stringly_typed_events", "description": "Events as enum/typed structs, not strings", "type": "llm_judge"},
+    {"name": "adding_channel_is_isolated", "description": "Adding SMS = implement trait + register, no mods to existing code", "type": "llm_judge"}
+  ]
+}

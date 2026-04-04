@@ -1,0 +1,27 @@
+{
+  "eval_id": 3,
+  "eval_name": "report-architecture",
+  "prompt": "I need to create different types of reports in my Rust app — PDF reports, CSV exports, and HTML reports. Each report type needs to: fetch data from a database, transform it, format it, and write the output. The data fetching and transformation steps are the same for all types but the formatting and writing differ. What's the best way to architect this?",
+  "assertions": [
+    {
+      "name": "identifies_correct_pattern",
+      "description": "Identifies Template Method, Strategy, or a combination as the appropriate pattern — not just generic advice",
+      "type": "llm_judge"
+    },
+    {
+      "name": "provides_concrete_code",
+      "description": "Provides actual Rust trait definitions and at least 2 concrete implementations, not just UML or abstract description",
+      "type": "llm_judge"
+    },
+    {
+      "name": "shared_vs_varying_separation",
+      "description": "Clearly separates the shared steps (fetch, transform) from the varying steps (format, write) in the architecture",
+      "type": "llm_judge"
+    },
+    {
+      "name": "extensibility_explained",
+      "description": "Explains how to add a new report type (e.g., Excel) and demonstrates it would only require implementing the trait — no changes to existing code",
+      "type": "llm_judge"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{"eval_id":2,"run_type":"with_skill","expectations":[
+{"text":"three_trait_hierarchies","passed":true,"evidence":"Source trait, Processor trait, Destination trait — three independent extension points. Each with multiple impls."},
+{"text":"processors_as_pipeline","passed":true,"evidence":"Vec<Box<dyn Processor>> applied sequentially. Each processor independently testable."},
+{"text":"each_component_independent","passed":true,"evidence":"Each source/processor/destination is its own struct with own config. Adding Kafka sink doesn't touch file sink."},
+{"text":"no_god_function","passed":true,"evidence":"Pipeline.run() is a small orchestrator: read from source, process through chain, ship to all destinations. Clean separation."}
+]}

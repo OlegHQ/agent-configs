@@ -1,0 +1,6 @@
+{"eval_id":3,"run_type":"without_skill","expectations":[
+{"text":"executor_trait","passed":true,"evidence":"ExecutionStrategy trait. Four impls: ShellCommand, HttpRequest, DockerRun, ClosureTask. Trait-based."},
+{"text":"executor_owns_config","passed":true,"evidence":"Each strategy holds its own config fields. Clean separation."},
+{"text":"scheduler_decoupled_from_executors","passed":true,"evidence":"Scheduler works with Box<dyn ExecutionStrategy>. HOWEVER: retry logic is embedded directly in run_task() function inside the scheduler, not separated as a composable concern. This means retry behavior can't be applied selectively or composed with other wrappers."},
+{"text":"adding_executor_isolated","passed":true,"evidence":"Adding new executor = new struct + impl. Scheduler untouched. Retry/timeout are in the scheduler loop, so they apply uniformly but can't be customized per-executor."}
+]}
