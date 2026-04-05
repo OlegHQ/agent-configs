@@ -6,12 +6,31 @@ Instructions for AI coding agents (Cursor, Codex, Claude Code, etc.) when editin
 
 This repo holds **reusable agent configuration**: Cursor/Claude plugin layouts, **agentpack**-ready packages, optional standalone **skills**, and **commands**. Changes should stay consistent with how each subtree is consumed (editor discovery, agentpack staging, or copy-paste).
 
-## Directory roles
+## Top-level layout
 
-- **`sample-plugin/`** — Reference layout. Preserve it as a small, documented exemplar unless the task is to change that reference. It documents symlink install, hooks, and MCP placeholders in its own README.
-- **`go-skills-plugin/`** — Go ecosystem skills only. New Go-related skills belong under `go-skills-plugin/skills/<skill-id>/SKILL.md`. Bump or align `go-skills-plugin/agentpack.toml` when versioning matters for consumers.
-- **`skills/`** — Cross-cutting or non-Go skills with `SKILL.md` + YAML frontmatter (`name`, `description`; follow existing files).
-- **`commands/`** — Command markdown with frontmatter (`description`, optional `allowed-tools`, `argument-hint`). Mirror the style of `commands/reflect.md`.
+| Path | Role |
+| --- | --- |
+| **`plugins/`** | Shippable plugin trees (manifests, `agentpack.toml`, bundled skills/agents). This is the default home for ecosystem bundles. |
+| **`skills/`** | Standalone skills meant to be copied or wired into a project/plugin without pulling a whole bundle. |
+| **`commands/`** | Shared command markdown (frontmatter + body). Mirror the style of `commands/reflect.md`. |
+| **`workspaces/`** | Skill eval / benchmark workspaces (inputs, runs, grading). Not packaged for end users; keep churn localized here. |
+| **`agentpack.toml`** (+ **`pack.lock`**) | Repo-level agentpack metadata / dev dependencies (e.g. upstream skills for authoring). |
+
+## `plugins/` — packaged plugins
+
+- **`plugins/sample-plugin/`** — Reference layout: rules, skills, agents, commands, hooks, MCP stub, dual Cursor/Claude manifests. Preserve it as a small exemplar unless the task is to change that reference. See its README for symlink install.
+- **`plugins/go-skills-plugin/`** — Go ecosystem skills only. New Go skills: `plugins/go-skills-plugin/skills/<skill-id>/SKILL.md`. Bump or align `plugins/go-skills-plugin/agentpack.toml` when versioning matters.
+- **`plugins/rust-dev/`** — Rust ecosystem skills. New Rust skills for this bundle: `plugins/rust-dev/skills/<skill-id>/SKILL.md`.
+- **`plugins/simplifier/`** — Small plugin (e.g. agents); extend only as that package grows.
+
+## Where to add a **new skill** (choose one)
+
+1. **Go-specific** → `plugins/go-skills-plugin/skills/<skill-id>/SKILL.md`
+2. **Rust-specific** (this repo’s Rust bundle) → `plugins/rust-dev/skills/<skill-id>/SKILL.md`
+3. **Cross-cutting or language-agnostic** → `skills/<skill-id>/SKILL.md` (YAML frontmatter: `name`, `description`)
+4. **Demo / template only** (for the reference plugin) → `plugins/sample-plugin/skills/<skill-id>/SKILL.md`
+
+Do not create extra nesting like `skills/skills/`; each skill is exactly one directory with `SKILL.md` inside.
 
 ## Conventions
 

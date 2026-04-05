@@ -29,7 +29,8 @@ This plugin relies on **default folder discovery** (no `rules` / `skills` paths 
 1. Symlink or copy this directory:
 
    ```bash
-   ln -sf /Users/snowbear/WORK/GIT/agent-configs/sample-plugin ~/.cursor/plugins/local/sample-plugin
+   cd /path/to/agent-configs/plugins/sample-plugin
+   ln -sf "$(pwd)" ~/.cursor/plugins/local/sample-plugin
    ```
 
 2. Restart Cursor or **Developer: Reload Window**.

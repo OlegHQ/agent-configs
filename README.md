@@ -8,21 +8,33 @@ Repository: [github.com/OlegHQ/agent-configs](https://github.com/OlegHQ/agent-co
 
 | Path | What it is |
 | --- | --- |
-| [`sample-plugin/`](sample-plugin/) | Reference plugin: rules, skills, agents, commands, hooks, MCP stub, dual Cursor/Claude manifests, `agentpack.toml`. See its [README](sample-plugin/README.md) for local install and debugging. |
-| [`go-skills-plugin/`](go-skills-plugin/) | Go-focused skill bundle (architecture, testing, HTMX, Templ, SSE, etc.). Versioned via `agentpack.toml` (`name = "go-skills"`). |
-| [`skills/`](skills/) | Standalone skills (e.g. deployment, tutoring) you can copy or wire into a plugin. Each skill lives in `<name>/SKILL.md` with YAML frontmatter. |
+| [`plugins/sample-plugin/`](plugins/sample-plugin/) | Reference plugin: rules, skills, agents, commands, hooks, MCP stub, dual Cursor/Claude manifests, `agentpack.toml`. See its [README](plugins/sample-plugin/README.md) for local install and debugging. |
+| [`plugins/go-skills-plugin/`](plugins/go-skills-plugin/) | Go-focused skill bundle (architecture, testing, HTMX, Templ, SSE, etc.). Versioned via `agentpack.toml` (`name = "go-skills"`). |
+| [`plugins/rust-dev/`](plugins/rust-dev/) | Rust-focused skills (design patterns, modularity, performance). Versioned via `agentpack.toml` (`name = "rust-dev"`). |
+| [`plugins/simplifier/`](plugins/simplifier/) | Compact plugin (agents and agentpack stub). |
+| [`skills/`](skills/) | Standalone skills you can copy or wire into a plugin. Each skill lives in `<skill-id>/SKILL.md` with YAML frontmatter. |
 | [`commands/`](commands/) | Command definitions (e.g. session reflection) with frontmatter for tool agents. |
+| [`workspaces/`](workspaces/) | Eval and benchmark workspaces for skills; not part of consumer plugin payloads. |
+
+## Where to put a new skill
+
+- **Go** → `plugins/go-skills-plugin/skills/<skill-id>/SKILL.md`
+- **Rust** (this bundle) → `plugins/rust-dev/skills/<skill-id>/SKILL.md`
+- **Cross-cutting** → `skills/<skill-id>/SKILL.md`
+- **Reference / demo** → `plugins/sample-plugin/skills/<skill-id>/SKILL.md`
+
+Details and conventions: [AGENTS.md](AGENTS.md).
 
 ## Using this repo
 
-- **As a plugin:** Symlink or copy a plugin directory (for example `sample-plugin`) into your editor’s local plugins path and reload the window. Details are in [`sample-plugin/README.md`](sample-plugin/README.md).
-- **With agentpack:** Point `agentpack.toml` in another project at a path or published key for `sample-plugin` or `go-skills-plugin`, then run your usual `agentpack lock` / `agentpack sync` workflow.
+- **As a plugin:** Symlink or copy a directory under `plugins/` (for example `plugins/sample-plugin`) into your editor’s local plugins path and reload the window. Details are in [`plugins/sample-plugin/README.md`](plugins/sample-plugin/README.md).
+- **With agentpack:** Point `agentpack.toml` in another project at a path or published key for `plugins/sample-plugin`, `plugins/go-skills-plugin`, `plugins/rust-dev`, etc., then run your usual `agentpack lock` / `agentpack sync` workflow.
 
 ## Contributing
 
-When adding skills or plugin assets, match the patterns already in this tree (frontmatter, folder names, and manifest fields). Keep `sample-plugin` suitable as a minimal reference layout unless the goal is explicitly to extend that reference.
+When adding skills or plugin assets, match the patterns already in this tree (frontmatter, folder names, and manifest fields). Keep `plugins/sample-plugin` suitable as a minimal reference layout unless the goal is explicitly to extend that reference.
 
 ## See also
 
-- [AGENTS.md](AGENTS.md) — guidance for AI agents working in this repository.
+- [AGENTS.md](AGENTS.md) — guidance for AI/people working in this repository.
 - [Cursor plugins reference](https://cursor.com/docs/reference/plugins.md)
