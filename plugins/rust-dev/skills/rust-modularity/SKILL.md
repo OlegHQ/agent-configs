@@ -1,283 +1,359 @@
 ---
 name: rust-modularity
 description: |
-  Guides Rust module structure, folder organization, and dependency layering for clean separation of concerns. Use this skill whenever structuring a new Rust project, adding modules to an existing crate, refactoring a flat or tangled module tree, splitting a growing file, or reorganizing code that has accumulated modularity debt. Triggers on ANY Rust structural/organizational task — not just explicit "refactor" requests. If the user says "create a new module", "split this file", "organize this code", "set up project structure", "this file is too big", or you notice a Rust crate with a crowded lib.rs, parallel implementations without shared traits, or god-modules with too many responsibilities, this skill applies. Complements rust-design-patterns (which covers individual code patterns like Builder/Strategy/State) — this skill focuses on the module graph, folder tree, and dependency direction between modules.
+  Guides Rust module structure, folder organization, and dependency direction for clean
+  separation of concerns. CRITICAL FIRST STEP: evaluates the codebase to determine which
+  architectural pattern fits (component-based, phase-pipeline, layered, workspace) before
+  prescribing any structure. Use this skill whenever structuring a new Rust project, adding
+  modules, refactoring a tangled module tree, splitting a growing file, or reorganizing code
+  with modularity debt. Triggers on ANY Rust structural task. Complements rust-design-patterns
+  (which covers individual code patterns like Builder/Strategy/enum-vs-trait decisions) — this
+  skill focuses on the module graph, folder tree, and dependency direction between modules.
 ---
 
 # Rust Modularity
 
-Structure modules so that adding a new feature means adding a new file in the right place —
-not touching ten existing ones. This skill is about the shape of your `src/` tree: which
-modules exist, what depends on what, and what's visible where.
+Structure modules so that adding a new feature means adding a new file in the right
+place — not touching ten existing ones.
+
+**Before restructuring anything, evaluate the codebase to determine which architectural
+pattern fits.** Forcing the wrong pattern creates artificial groupings that obscure domain
+boundaries — the cure is worse than the disease.
+
+## Step 0: Evaluate Architecture
+
+Every restructuring starts here. Skip this and you'll impose a structure that fights the
+code's natural shape.
+
+### The Decision Tree
+
+Answer these questions about the codebase in order:
+
+```
+1. Are components independently publishable or reusable as libraries?
+   ├── Yes → Workspace crates (Pattern C)
+   └── No ↓
+
+2. Does the code flow through clear sequential phases?
+   (e.g., parse → resolve → fetch → cache → stage → launch)
+   ├── Yes → Phase-pipeline modules (Pattern B)
+   └── No ↓
+
+3. Are there distinct domains that own their own types and logic?
+   (e.g., "auth", "billing", "inventory" that share little)
+   ├── Yes → Domain component modules (Pattern A)
+   └── No ↓
+
+4. Is there a clear request/response or input/output boundary?
+   (e.g., HTTP handler → service → storage)
+   ├── Yes → Layered modules (Pattern D)
+   └── No → Start flat, group when patterns emerge
+```
+
+### Pattern A: Domain Components
+
+**When it fits:** Distinct domains that each own their types, logic, and I/O. Domains
+share some types but are otherwise independent. Most Rust CLIs and applications.
+
+**Shape:** Each top-level module is a self-contained domain. Shared types live with
+the domain that owns them, or in a small shared module when genuinely cross-cutting.
+
+```
+src/
+├── lib.rs
+├── github/          # GitHub API: URL parsing, downloads, ref resolution, types
+├── cache/           # Package caching: layout, materialization, restore, indexing
+├── lockfile/        # pack.lock: data model, serialization, init
+├── manifest/        # agentpack.toml: parsing, editing, types
+├── staging/         # Harness staging: merge cached trees into plugin layouts
+├── launcher/        # Execute harnesses: Claude, Codex, Cursor, OpenCode
+└── cli.rs           # Arg parsing + dispatch (thin wiring)
+```
+
+**Key property:** Each directory answers "what domain is this?" not "what technical
+layer is this?" A type like `GitHubSource` lives in `github/`, not in a generic
+`model/` bag — because `github/` is the domain that defines, creates, and validates it.
+
+**Real-world examples:** mise (`cli/`, `backend/`, `config/`, `toolset/`, `shell/`),
+bat (`assets/`, `controller.rs`, `printer.rs`), starship (`modules/`, `configs/`,
+`formatter/`).
+
+### Pattern B: Phase-Pipeline
+
+**When it fits:** Code flows through a clear sequence of processing phases. Each phase
+transforms data and passes it to the next. Common in compilers, build tools, and
+package managers.
+
+**Shape:** Modules named after what they *do* in the pipeline, not what technical
+kind they are.
+
+```
+src/
+├── lib.rs
+├── parse/           # Phase 1: read config files, parse syntax
+├── resolve/         # Phase 2: dependency resolution, constraint solving
+├── fetch/           # Phase 3: download/cache from registries
+├── build/           # Phase 4: compile, link, transform artifacts
+├── install/         # Phase 5: place artifacts in target locations
+├── types.rs         # Shared types that flow between phases (small!)
+└── cli.rs           # Entry point, wiring
+```
+
+**Key property:** Types flow *forward* through the pipeline. `resolve/` produces a
+lockfile that `fetch/` consumes. Backward dependencies (fetch importing from build)
+are violations. A small shared `types.rs` is acceptable for types that genuinely
+cross 3+ phases — but resist making it a dumping ground.
+
+**Real-world examples:** cargo (resolve → download → compile → install), rustc
+(parse → expand → lower → codegen), uv (resolve → fetch → build → install).
+
+### Pattern C: Workspace Crates
+
+**When it fits:** Components are independently useful libraries, have different
+dependency trees, or the team is large enough that compile-time isolation matters.
+
+**Shape:** Multiple `Cargo.toml` files, one per crate, orchestrated by a root workspace.
+
+```
+crates/
+├── core/            # Thin CLI shell, wiring only
+├── resolver/        # Dependency resolution (publishable library)
+├── registry/        # Registry API client
+├── cache/           # Content-addressed storage
+└── types/           # Shared types (keep minimal!)
+```
+
+**Warning signs you're splitting too early:**
+- Every crate depends on `*-types` (you just moved the coupling, not removed it)
+- Cross-crate refactoring is painful because of coordinated `Cargo.toml` changes
+- Only one binary consumes all the crates
+
+**Real-world examples:** ripgrep (10 crates — `grep`, `globset`, `ignore` are
+independently published), uv (67+ crates — justified by team size and reuse).
+
+### Pattern D: Layered
+
+**When it fits:** Clear request/response boundary where handlers delegate to
+services that delegate to storage. Common in web servers and RPC services.
+
+**Shape:** Modules named by their distance from the boundary.
+
+```
+src/
+├── lib.rs
+├── transport/       # HTTP/gRPC handlers, serialization
+├── service/         # Business logic, orchestration
+├── storage/         # Database, filesystem, external APIs
+└── types/           # Shared data model
+```
+
+**Warning signs you're forcing layers:**
+- Your "model" bag mixes `HttpRequest`, `DbRow`, `ConfigEntry`, and `DomainEvent`
+- Your "service" layer is a pass-through that adds no logic
+- Pipeline code gets scattered across three directories per phase
+
+### Hybrid: Domains With Internal Layers
+
+Real codebases often combine patterns. A domain component can have internal layering:
+
+```
+src/
+├── github/          # Domain component
+│   ├── mod.rs       # Public API (facade)
+│   ├── types.rs     # GitHubSource, TagEntry (domain types)
+│   ├── api.rs       # HTTP calls (I/O layer)
+│   ├── cache.rs     # Metadata caching (storage layer)
+│   └── parse.rs     # URL parsing (pure logic)
+├── cache/           # Another domain component
+│   ├── mod.rs
+│   ├── layout.rs    # Directory structure logic
+│   └── restore.rs   # Download + verify (I/O)
+```
+
+Each component is self-contained. Internal layering within a component is fine — it's
+forced *top-level* layering across unrelated domains that creates problems.
 
 ## The Dependency Rule
 
-Every well-structured Rust crate follows one principle: **dependencies point inward and
-downward, never sideways or upward.**
+Regardless of which pattern you chose, one rule is universal:
 
-Visualize your crate as layers. Each layer may only `use` items from layers below it:
+**Dependencies point inward — never from infrastructure toward the code that uses it.**
 
-```
-Layer 4: bin / main.rs          ─── entry point, wiring only
-Layer 3: protocol / transport   ─── JSON-RPC, HTTP, CLI (how you talk to the world)
-Layer 2: service / orchestration ─── business logic, coordinates lower layers
-Layer 1: domain / storage       ─── persistence, indexing, domain operations
-Layer 0: model / types / config ─── pure data, no side effects, no I/O
-```
+In practice:
+- A domain component should not import from the CLI/transport layer
+- A pipeline phase should not import from a later phase
+- A storage module should not import from the service that calls it
 
-**Why this matters:** If `model.rs` imports from `service.rs`, then changing business logic
-forces recompilation (and potentially redesign) of your data types. That coupling is the
-root cause of "I changed one thing and everything broke." Keep the bottom layers ignorant
-of the top — they define *what* things are, not *how* they're used.
+**How to check:** Trace each `use crate::` import. Draw an arrow. If any arrow points
+"upward" (toward the entry point / orchestration layer), that's a violation.
 
-**How to check:** After organizing, mentally trace each `use crate::` import. If it points
-upward (a lower layer importing a higher one), that's a dependency violation. Fix it by
-extracting the shared type downward or introducing a trait that the lower layer defines and
-the upper layer implements.
+**How to fix violations:**
+1. **Extract downward:** Move the shared type/function to the module that should own it
+2. **Trait inversion:** Lower module defines a trait, upper module implements it
+3. **Small shared module:** For types genuinely used by 3+ components, a focused `types.rs`
+   (not a catch-all `model/`)
 
-## Module Tree Anatomy
+See `references/dependency-analysis.md` for the full audit process.
 
-A healthy Rust crate groups files by **domain responsibility**, not by technical kind:
+## Module Mechanics
 
-```
-src/
-├── main.rs                    # Entry point — wiring, arg parsing, nothing else
-├── lib.rs                     # Module declarations only — no logic here
-│
-├── model/                     # Layer 0: Pure data types
-│   ├── mod.rs                 #   Re-exports public types
-│   ├── symbol.rs              #   Code symbol types
-│   ├── section.rs             #   Doc section types
-│   └── meta.rs                #   Response metadata types
-│
-├── config.rs                  # Layer 0: Constants, paths, feature flags
-│
-├── storage/                   # Layer 1: Persistence (depends on: model, config)
-│   ├── mod.rs                 #   Shared trait + re-exports
-│   ├── traits.rs              #   IndexStore<T> trait — shared interface
-│   ├── code.rs                #   Code index (implements IndexStore)
-│   └── doc.rs                 #   Doc index (implements IndexStore)
-│
-├── extract/                   # Layer 1: Parsing/extraction (depends on: model)
-│   ├── mod.rs                 #   Registry + re-exports
-│   ├── common.rs              #   Shared tree-sitter utilities
-│   ├── python.rs              #   Language-specific extractors
-│   ├── rust.rs
-│   └── ...
-│
-├── service/                   # Layer 2: Business logic (depends on: storage, extract, model)
-│   ├── mod.rs                 #   Public facade type
-│   ├── code.rs                #   Code operations
-│   └── doc.rs                 #   Doc operations
-│
-└── transport/                 # Layer 3: Protocol handling (depends on: service)
-    ├── mod.rs
-    └── mcp.rs                 #   MCP JSON-RPC handler
-```
+These rules apply regardless of architectural pattern.
 
-The key properties of this tree:
+### lib.rs: Skeletal
 
-1. **Each directory is one layer** — you can tell the dependency direction from the folder name
-2. **mod.rs is a table of contents** — it declares submodules and re-exports, nothing more
-3. **Parallel implementations share a trait** — `storage/traits.rs` defines `IndexStore<T>`,
-   both `code.rs` and `doc.rs` implement it
-4. **No file exceeds ~500 lines** — if it does, it's doing too much and should split
-
-## When to Split a File
-
-Split when a file has accumulated **multiple responsibilities**, not just when it's long.
-A 400-line file with one focused job (e.g., a complex parser) is fine. A 200-line file
-with three unrelated sections should split.
-
-**Signals to split:**
-
-- The file has `// --- Section ---` comments separating unrelated blocks
-- Two structs/impls in the same file that don't reference each other
-- You want to make something `pub(super)` but it's in the wrong module
-- A `match` dispatches to logic that should live in separate files (god-module pattern)
-- Different team members frequently have merge conflicts in the same file
-
-**How to split:** Move the extracted code to a sibling file in the same directory. Update
-`mod.rs` to declare it. Use `pub(super)` for items that only the parent module needs.
-Re-export anything that was previously public from `mod.rs` so external callers don't break.
-
-## Visibility: Say What You Mean
-
-Rust's visibility system is your enforcement mechanism for the dependency rule. Use the
-narrowest visibility that works:
-
-| Visibility | Meaning | Use when |
-|---|---|---|
-| `pub` | Anyone can use this | It's part of your crate's API surface |
-| `pub(crate)` | Crate-internal but cross-module | Shared infrastructure (DB pools, config) |
-| `pub(super)` | Parent module only | Helper used by siblings in the same directory |
-| `pub(in path)` | Specific ancestor module | Rare — usually `pub(super)` suffices |
-| (private) | Same module only | Implementation details |
-
-**Common mistake:** Making everything `pub` "because it's easier." This throws away the
-compiler's ability to catch coupling violations. If a type is only used within `storage/`,
-make it `pub(super)` — now the compiler prevents `transport/` from reaching into storage
-internals.
-
-**Practical rule:** Start with private. Widen to `pub(super)` when a sibling needs it.
-Widen to `pub(crate)` when another top-level module needs it. Widen to `pub` only for
-your crate's external API.
-
-## mod.rs: The Table of Contents Pattern
-
-Every directory module needs a `mod.rs`. Keep it lean — it has three jobs:
+`lib.rs` is a flat list of `mod` declarations. No functions, no type definitions, no
+`use` re-exports. If it has logic, extract it to a named module.
 
 ```rust
-// 1. Declare submodules (controls what exists in this namespace)
-mod code;
-mod doc;
-mod traits;
+// Good
+pub mod cache;
+pub mod github;
+mod cli;
+mod staging;
 
-// 2. Re-export the public interface (controls what's visible outside)
-pub use traits::IndexStore;
-pub use code::CodeIndex;
-pub use doc::DocIndex;
-
-// 3. Optionally: a small amount of shared glue (< 30 lines)
-//    If the glue grows, extract it to its own submodule.
+// Bad
+pub mod cache;
+pub use cache::CacheKey;  // Let callers use cache::CacheKey
+fn setup() { ... }        // Put this in a module
 ```
 
-**Why this matters:** When `mod.rs` contains significant logic, it becomes a bottleneck.
-Every change to the directory's logic means editing `mod.rs`, which creates merge conflicts
-and makes it hard to understand what the module *contains* vs what it *does*.
+### mod.rs: Table of Contents
 
-## lib.rs: Keep It Skeletal
-
-`lib.rs` should be a flat list of `pub mod` declarations — nothing else. No functions,
-no type definitions, no `use` statements. It's the root of your module tree, not a
-place to put code.
+Three jobs only: declare submodules, re-export the public interface, optionally < 30
+lines of glue. If glue grows, extract it to a submodule.
 
 ```rust
-// Good: lib.rs is just a manifest
-pub mod config;
-pub mod extract;
-pub mod model;
-pub mod service;
-pub mod storage;
-pub mod transport;
+mod api;
+mod parse;
+mod types;
 
-// Bad: lib.rs has logic, re-exports, helper functions
-pub mod config;
-pub use config::APP_NAME;  // Don't — let callers use config::APP_NAME
-fn setup_logging() { ... }  // Don't — put this in a module
+pub use types::GitHubSource;
+pub use parse::parse_github_url;
+pub use api::{download_tarball, resolve_ref};
 ```
 
-**When lib.rs grows beyond ~15 mod declarations,** that's a signal your top-level is too
-flat. Group related modules into directories. `model.rs` + `config.rs` + `types.rs` →
-`model/` directory with submodules.
+### Visibility: Narrowest First
 
-## Anti-Patterns and Fixes
+| Visibility | Use when |
+|---|---|
+| private | Default. Same module only. |
+| `pub(super)` | Sibling in same directory needs it. |
+| `pub(crate)` | Another top-level module needs it. |
+| `pub` | Part of the crate's external API. |
+
+Start private. Widen only when the compiler tells you to.
+
+### When to Split a File
+
+Split on **multiple responsibilities**, not on line count. A 400-line file with one
+focused job is fine. A 200-line file with three unrelated sections should split.
+
+**Signals:**
+- `// --- Section ---` comments separating unrelated blocks
+- Two structs/impls that don't reference each other
+- You need `pub(super)` but the item is in the wrong module
+- A match dispatches to logic that should live in separate files
+
+**How:** Move code to a sibling file. Declare in `mod.rs`. Use `pub(super)` for
+parent-only visibility. Re-export anything that was previously public.
+
+### When to Use Workspaces
+
+| Signal | Action |
+|---|---|
+| Components are independently publishable | Workspace crates |
+| Different parts need different heavy dependencies | Workspace crates |
+| Different teams own different parts | Workspace crates |
+| Everything depends on everything else | Stay single crate |
+| Only one binary consumes the code | Stay single crate |
+
+## Anti-Patterns
+
+### The Model Bag
+
+**Symptom:** A `model/` or `types/` directory that mixes `GitHubSource`, `CacheKey`,
+`Lockfile`, `Manifest`, `StagingConfig`, and `CliArgs` because they're all "data types."
+
+**Problem:** These types belong to different domains. Changes to GitHub types shouldn't
+require navigating past lockfile types. The bag grows without bound and creates false
+coupling — everything depends on `model/` so nothing can move independently.
+
+**Fix:** Each type lives with the domain that owns it. `GitHubSource` in `github/`,
+`PackLock` in `lockfile/`, `Manifest` in `manifest/`. When a type is genuinely shared
+across 3+ domains, place it in a small, focused `types.rs` at the crate root — but
+resist the urge to expand it.
+
+### Layer-Forcing on Pipeline Code
+
+**Symptom:** A pipeline tool (parse → resolve → fetch → stage) organized as
+`model/`, `service/`, `io/` layers. Each pipeline phase is scattered across three
+directories.
+
+**Problem:** To understand "how does resolution work?" you must read files in three
+different directories. Adding a new phase means touching every layer directory.
+
+**Fix:** Name modules after phases (`resolve/`, `fetch/`, `staging/`), not after
+technical layers. Each phase module contains its own types, logic, and I/O.
 
 ### The Flat Crate
 
-**Symptom:** `lib.rs` has 10+ `pub mod` declarations, all at the root level.
+**Symptom:** `lib.rs` has 10+ root-level `pub mod` declarations with no hierarchy.
 
-```
-src/
-├── lib.rs      # pub mod a; pub mod b; pub mod c; ... pub mod k;
-├── a.rs
-├── b.rs
-├── ...
-└── k.rs
-```
+**Problem:** No structure means no enforced dependency direction. Any file can import
+any other. Violations creep in silently.
 
-**Problem:** No hierarchy means no enforced layering. Any file can import any other.
-Dependency violations creep in silently because there's no structure to prevent them.
-
-**Fix:** Group by layer/domain. Move related `.rs` files into directories with a `mod.rs`.
-The number of top-level `pub mod` declarations in `lib.rs` should be 4-7 for a
-medium-sized crate.
+**Fix:** Group related modules into directories. Ask: "which modules share a domain?"
+and "which modules are part of the same pipeline phase?" Group accordingly.
 
 ### The God Module
 
-**Symptom:** One module (often `service/mod.rs`) has 40+ methods, handles all dispatch,
-and touches every other module in the crate.
+**Symptom:** One module has 300+ lines, 3+ unrelated impl blocks, and is the most
+frequently edited file.
 
-**Problem:** Every new feature adds another method to the god module. Merge conflicts.
-Hard to test one concern without loading the entire module.
+**Fix:** Split by responsibility. Each responsibility becomes a submodule. The parent
+`mod.rs` keeps a thin dispatch/facade. See `references/splitting-god-modules.md`.
 
-**Fix:** Split by domain. If `service/mod.rs` dispatches both code and doc operations,
-extract `service/code.rs` and `service/doc.rs`. The `mod.rs` keeps a thin dispatch
-method that delegates. Each sub-module gets its own impl block on the service type, or
-better yet, each becomes its own type behind a shared trait.
+### Premature Crate Splitting
 
-See `references/splitting-god-modules.md` for a worked example.
+**Symptom:** Extracting `github/` into its own crate when it still needs `ModuleId`,
+`CacheKey`, `Error`, and `Ui` from the parent.
 
-### Parallel Implementations Without Shared Trait
+**Problem:** You create a `*-types` crate that is really "everything shared" — the same
+model bag, now with Cargo.toml overhead and painful cross-crate refactoring.
 
-**Symptom:** `storage.rs` and `doc_storage.rs` (or `code_index.rs` and `doc_index.rs`)
-implement the same operations — open, index, search, retrieve — with nearly identical
-signatures but no shared interface.
+**Fix:** Stay single-crate until a component is genuinely independent or the team
+needs compile-time isolation.
 
-**Problem:** Bug fixes must be applied twice. Behavior drifts between the two
-implementations. Testing requires separate test suites that check the same invariants.
+## Integration with rust-design-patterns
 
-**Fix:** Extract a shared trait into the parent module, then implement it for both:
+This skill decides **where code lives** (module tree, folder structure, dependency
+direction). The companion `rust-design-patterns` skill decides **how code is shaped**
+(enum vs trait, Strategy, Builder, pipeline composition).
 
-```rust
-// storage/traits.rs
-pub trait IndexStore {
-    type Item;
-    type Update;
+Use them together:
 
-    fn open(path: &Path) -> Result<Self> where Self: Sized;
-    fn index(&mut self, updates: Vec<Self::Update>) -> Result<()>;
-    fn search(&self, query: &str, limit: usize) -> Result<Vec<SearchHit<Self::Item>>>;
-    fn retrieve(&self, id: &str) -> Result<Option<Self::Item>>;
-}
+1. **rust-modularity** first: evaluate architecture, determine module structure
+2. **rust-design-patterns** second: within each module, apply appropriate patterns
+   (e.g., the harness stager uses Strategy pattern inside `staging/`)
 
-// storage/code.rs
-impl IndexStore for CodeIndex { type Item = Symbol; ... }
-
-// storage/doc.rs
-impl IndexStore for DocIndex { type Item = Section; ... }
-```
-
-Now generic code can operate on `impl IndexStore` without knowing which backend it uses.
-
-### Scattered Constants
-
-**Symptom:** Configuration values spread across `config.rs`, `db.rs`, `savings.rs`, and
-other modules. To understand "what can I configure?" you must grep the entire crate.
-
-**Fix:** Centralize in `config.rs` (or `config/` directory for larger crates). Each module
-imports from `config` — never defines its own constants that belong to the global
-configuration surface.
-
-## When to Use Workspaces vs Modules vs Crates
-
-| Scale | Mechanism | Signal |
-|---|---|---|
-| < 5 files | Flat modules in `lib.rs` | Small utility or prototype |
-| 5-30 files | Directory modules with `mod.rs` | Most applications |
-| 30-100 files | Directory modules + consider workspace | Large application |
-| Independent versioning needed | Separate crate in workspace | Library consumed by multiple binaries |
-| Different dependency sets | Separate crate in workspace | One part needs `tokio`, another doesn't |
-| Different teams own different parts | Workspace with per-team crates | Organizational boundary |
-
-**The workspace question:** If two parts of your code have **different dependency trees**
-(one needs heavy ML crates, another is a thin CLI), splitting into workspace members
-reduces compile times and clarifies ownership. But don't split prematurely — a single
-crate with good module structure is simpler than a workspace with tangled cross-crate
-dependencies.
+A common workflow: rust-modularity identifies a god module that needs splitting.
+rust-design-patterns determines whether the split pieces should be trait impls,
+enum variants, or independent structs.
 
 ## Refactoring Checklist
 
 Before finalizing module structure:
 
-- [ ] `lib.rs` is a flat list of `pub mod` declarations — no logic, no re-exports
-- [ ] Top-level module count in `lib.rs` is 4-7 for a medium crate
-- [ ] Each directory's `mod.rs` is a table of contents — declarations + re-exports only
+- [ ] Architectural pattern is chosen based on the decision tree, not assumed
+- [ ] `lib.rs` is a flat list of `mod` declarations — no logic, no re-exports
+- [ ] Each directory answers "what domain/phase is this?" in one sentence
+- [ ] No "model bag" — types live with the domain that owns them
+- [ ] Dependencies point inward — trace `use crate::` imports to verify
+- [ ] `mod.rs` files are tables of contents (< 30 lines of logic)
 - [ ] No file exceeds ~500 lines of logic
-- [ ] Dependencies point downward only — lower layers don't import upper layers
-- [ ] Parallel implementations share a trait defined in their parent module
-- [ ] Visibility is as narrow as possible — `pub(super)` before `pub(crate)` before `pub`
-- [ ] Constants are centralized in `config`, not scattered across modules
+- [ ] Visibility is as narrow as possible
+- [ ] Parallel implementations share a trait (coordinate with rust-design-patterns)
 
-See `references/dependency-layers.md` for a detailed layer validation walkthrough.
-See `references/splitting-god-modules.md` for step-by-step god-module decomposition.
+See `references/dependency-analysis.md` for a step-by-step dependency audit.
+See `references/splitting-god-modules.md` for god-module decomposition.
+See `references/architecture-examples.md` for real-world Rust project structures.

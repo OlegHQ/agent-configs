@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Evaluates the codebase shape before prescribing structure", "passed": true, "evidence": "Full 'Step 0: Evaluate Architecture' section walks through all 4 decision tree questions, explicitly ruling out pipeline and workspace patterns"},
+    {"text": "Recognizes that a layered structure IS appropriate here", "passed": true, "evidence": "Identifies 'clear request/response → logic → storage boundary' and proposes internal layering per domain: routes.rs → service.rs → queries.rs"},
+    {"text": "Recommends splitting routes.rs by domain (users, products, orders, admin)", "passed": true, "evidence": "Creates users/, products/, orders/, admin/ directories each with routes.rs, queries.rs, types.rs"},
+    {"text": "Recommends splitting db.rs similarly by domain", "passed": true, "evidence": "db.rs split into users/queries.rs, products/queries.rs, orders/queries.rs, admin/queries.rs"},
+    {"text": "Does NOT recommend the same structure used for a CLI tool or pipeline", "passed": true, "evidence": "Explicitly says 'The critical mistake to avoid here is applying pure layered architecture (Pattern D) across all domains at the top level' and warns against handlers/ bag with 4 domains mixed. Chooses hybrid domain+layers."}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

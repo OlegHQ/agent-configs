@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Evaluates the codebase shape before prescribing structure", "passed": false, "evidence": "Jumps directly to 'Target Structure' without evaluating which pattern fits. No decision tree, no analysis of why this shape was chosen over alternatives."},
+    {"text": "Recognizes that a layered structure IS appropriate here", "passed": true, "evidence": "Proposes models/ → db/ → routes/ layering with explicit dependency rule diagram"},
+    {"text": "Recommends splitting routes.rs by domain (users, products, orders, admin)", "passed": true, "evidence": "Creates routes/users.rs, routes/products.rs, routes/orders.rs, routes/admin.rs"},
+    {"text": "Recommends splitting db.rs similarly by domain", "passed": true, "evidence": "Creates db/users.rs, db/products.rs, db/orders.rs, db/admin.rs"},
+    {"text": "Does NOT recommend the same structure used for a CLI tool or pipeline", "passed": false, "evidence": "No differentiation. Prescribes layers without acknowledging this is specifically appropriate for web APIs vs other app types. A reader wouldn't know this advice is web-API-specific."}
+  ],
+  "summary": {"passed": 3, "failed": 2, "total": 5, "pass_rate": 0.6}
+}

@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Evaluates the codebase architecture BEFORE proposing a structure", "passed": true, "evidence": "Opens with 'Before touching any files, map what you have into coherent groups' and does a cluster analysis table"},
+    {"text": "Does NOT prescribe a generic layered architecture with model/service/transport as primary grouping", "passed": true, "evidence": "No model/service/io layering. Proposes domain clusters: types/, registry/, image/, cache/, ops/, cli/"},
+    {"text": "Proposes grouping by domain responsibility or pipeline phase", "passed": true, "evidence": "Groups by domain: types/, registry/, image/, cache/, ops/, cli/ with clear rationale"},
+    {"text": "Identifies that types like digest, platform, layer belong with their domain, not a catch-all types/ or model/", "passed": false, "evidence": "FAILS: Creates a types/ directory containing manifest.rs, digest.rs, platform.rs, layer.rs — the 'model bag' anti-pattern. Explicitly argues 'Putting it under any one of those creates import noise everywhere else'"},
+    {"text": "Mentions keeping lib.rs skeletal with fewer top-level declarations", "passed": true, "evidence": "Shows lib.rs with 8 pub mod declarations. Says 'Stop declaring 16 pub mod entries in lib.rs'"}
+  ],
+  "summary": {"passed": 4, "failed": 1, "total": 5, "pass_rate": 0.8}
+}

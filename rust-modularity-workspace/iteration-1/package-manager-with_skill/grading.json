@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Explicitly advises against or cautions about the proposed model/service/io structure", "passed": true, "evidence": "Opening line: 'Short answer: No. The proposed layering fights the natural shape of a package manager.' Verdict table at end has 'Reject' for all three proposed directories."},
+    {"text": "Explains WHY layers are wrong here: scatters pipeline phases across directories", "passed": true, "evidence": "Traces what happens to resolution: 'resolve.rs logic moves to service/, SolvedDependency type moves to model/, registry HTTP moves to io/. Now, to understand how resolution works, a reader must open model/, service/, and io/.'"},
+    {"text": "Recommends keeping modules named after pipeline phases or domain components", "passed": true, "evidence": "Proposes manifest.rs, resolve/, fetch/, cache/, index/, staging/, install/ — all named after pipeline phases"},
+    {"text": "Warns about the model bag anti-pattern", "passed": true, "evidence": "Dedicated section 'The Second Problem: The Model Bag' with full explanation: 'Manifest is the type that the manifest-parsing phase owns. Lockfile is the type the lockfile phase owns... Lumping them together means a change to lockfile serialization sits next to a change to manifest parsing — false coupling'"},
+    {"text": "Suggests types.rs is acceptable IF kept small, or recommends moving types to owning modules", "passed": true, "evidence": "Dedicated section 'On types.rs Specifically' says keep it 'if and only if those types are used across 3+ phases' and 'If it grows past ~100 lines, audit which types are actually cross-cutting'"}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Evaluates the codebase architecture BEFORE proposing a structure", "passed": true, "evidence": "Entire 'Step 0: Evaluate Architecture' section walks through decision tree questions Q1-Q3 before proposing anything"},
+    {"text": "Does NOT prescribe a generic layered architecture with model/service/transport as primary grouping", "passed": true, "evidence": "Verdict is 'Pattern A — Domain Components'. No model/service/io layering proposed. Types live in image/, registry/, etc."},
+    {"text": "Proposes grouping by domain responsibility or pipeline phase", "passed": true, "evidence": "Proposes image/, registry/, cache/, ops/, cli/, infra/ — all named by domain responsibility"},
+    {"text": "Identifies that types like digest, platform, layer belong with their domain, not a catch-all types/ or model/", "passed": true, "evidence": "digest.rs → image/digest.rs, platform.rs → image/platform.rs. Explicitly says 'Digest type is part of the image data model, not a standalone utility'"},
+    {"text": "Mentions keeping lib.rs skeletal with fewer top-level declarations", "passed": true, "evidence": "Shows lib.rs with 6 declarations: image, registry, cache, ops, cli, infra. States 'Flat mod declarations only — no logic, no re-exports'"}
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

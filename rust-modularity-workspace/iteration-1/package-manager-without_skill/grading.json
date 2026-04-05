@@ -1,0 +1,10 @@
+{
+  "expectations": [
+    {"text": "Explicitly advises against or cautions about the proposed model/service/io structure", "passed": true, "evidence": "Says 'No — not as described' and explains the grouping is 'organized by technical kind, not dependency direction'"},
+    {"text": "Explains WHY layers are wrong here: scatters pipeline phases across directories", "passed": true, "evidence": "Explains service/ files still reach into io/ files and 'the coupling problem is not actually solved — just renamed'. Shows how cache and index have different consumers."},
+    {"text": "Recommends keeping modules named after pipeline phases or domain components", "passed": true, "evidence": "Proposes resolve.rs, fetch.rs, staging.rs, install.rs as top-level files following the pipeline"},
+    {"text": "Warns about the model bag anti-pattern", "passed": false, "evidence": "FAILS: Proposes model/ directory containing types.rs, manifest.rs, lockfile.rs — the exact model bag. Calls them 'pure data definitions with serialization' but mixes manifest types (parsing domain) with lockfile types (serialization domain) with shared types."},
+    {"text": "Suggests types.rs is acceptable IF kept small, or recommends moving types to owning modules", "passed": false, "evidence": "FAILS: Moves types.rs INTO model/ without qualification. No guidance about keeping it small or moving types to owning modules."}
+  ],
+  "summary": {"passed": 3, "failed": 2, "total": 5, "pass_rate": 0.6}
+}
