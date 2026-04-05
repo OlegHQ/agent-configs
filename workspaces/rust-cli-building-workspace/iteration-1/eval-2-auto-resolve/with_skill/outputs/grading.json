@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-2-auto-resolve-with_skill",
+  "expectations": [
+    {
+      "text": "Matches workspaces by both UUID/ID and human-friendly name",
+      "passed": true,
+      "evidence": "resolve.rs line 39-41: `w.id == query || w.name.to_ascii_lowercase() == q_lower` — checks both ID (exact) and name (case-insensitive). Tests confirm: resolve_by_id and resolve_by_name_case_insensitive."
+    },
+    {
+      "text": "Name matching is case-insensitive",
+      "passed": true,
+      "evidence": "resolve.rs line 37: `let q_lower = query.to_ascii_lowercase()` then compared with `w.name.to_ascii_lowercase()`. Test resolve_by_name_case_insensitive passes 'acme corp' to match 'Acme Corp'."
+    },
+    {
+      "text": "Auto-picks sole workspace with a log message to stderr",
+      "passed": true,
+      "evidence": "resolve.rs lines 53-57: when workspaces.len()==1, returns the workspace and calls `eprintln!(\"auto: using workspace {:?} ({})\", ws.name, ws.id)`."
+    },
+    {
+      "text": "On ambiguity, shows copy-pasteable --workspace <value> flags in error",
+      "passed": true,
+      "evidence": "output.rs format_resolve_error for AmbiguousWorkspace: `msg.push_str(&format!(\"  --workspace {:?}  # {}{}\", ws.name, ws.id, label))` — shows copy-pasteable --workspace flags for each candidate."
+    },
+    {
+      "text": "Error mentions config file as an alternative to flags",
+      "passed": true,
+      "evidence": "output.rs line 111: `msg.push_str(\"or set defaults.workspace in ~/.config/pmtool/config.toml\")` — mentions config file as alternative."
+    },
+    {
+      "text": "Function is async (requires API call to fetch workspaces)",
+      "passed": true,
+      "evidence": "resolve.rs: `pub async fn resolve_workspace(client: &Client, hint: Option<&str>) -> Result<Workspace, ResolveError>` — async function that calls `client.list_workspaces().await`."
+    }
+  ]
+}

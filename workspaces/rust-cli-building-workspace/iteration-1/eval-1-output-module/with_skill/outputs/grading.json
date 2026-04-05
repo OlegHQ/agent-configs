@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-1-output-module-with_skill",
+  "expectations": [
+    {
+      "text": "Has a generic table formatter function (print_table or equivalent)",
+      "passed": true,
+      "evidence": "output.rs defines `pub fn print_table(headers: &[&str], rows: &[Vec<String>])` — fully generic, takes any headers and row data."
+    },
+    {
+      "text": "Routes to JSON when --json is set, table otherwise (dual-mode output)",
+      "passed": true,
+      "evidence": "print_tasks(json: bool, tasks: &[Task]) checks `if json { return print_json_lines(tasks); }` then falls through to print_table. Also print_task_detail does the same routing."
+    },
+    {
+      "text": "Has a hint/next-steps function that prints suggestions to stderr",
+      "passed": true,
+      "evidence": "output.rs defines `pub fn hint(items: &[&str])` that prints to stderr via eprintln!, with 'hint:' prefix."
+    },
+    {
+      "text": "Table output is borderless (no +, |, or --- border characters)",
+      "passed": true,
+      "evidence": "print_table uses only space padding (`format!(\"{:<w$}\", ...)`) and two-space column separators. No border characters (+, |, ---) anywhere."
+    },
+    {
+      "text": "Formats due_date for human readability (not raw ISO/Debug)",
+      "passed": true,
+      "evidence": "fmt_datetime formats as \"%b %d, %Y %H:%M\" (e.g. \"Apr 05, 2026 09:30\"), confirmed by test assertion."
+    },
+    {
+      "text": "Has a type-specific renderer function for Tasks (not generic JSON dump)",
+      "passed": true,
+      "evidence": "output.rs has `pub fn print_tasks(json: bool, tasks: &[Task])` and `pub fn print_task_detail(json: bool, task: &Task)` — both are Task-specific renderers with custom column selection and formatting."
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "skill_name": "rust-cli-building",
+    "skill_path": "/Users/snowbear/WORK/GIT/notion-calendar-cli/.agents/skills/rust-cli-building",
+    "executor_model": "claude-opus-4-6",
+    "analyzer_model": "claude-opus-4-6",
+    "timestamp": "2026-04-05T14:47:21Z",
+    "evals_run": ["eval-1-output-module", "eval-2-auto-resolve", "eval-3-error-handling"],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_name": "eval-1-output-module",
+      "config": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 6,
+      "total": 6,
+      "time_seconds": 95.2,
+      "tokens": 23474
+    },
+    {
+      "eval_name": "eval-1-output-module",
+      "config": "without_skill",
+      "pass_rate": 0.5,
+      "passed": 3,
+      "total": 6,
+      "time_seconds": 78.1,
+      "tokens": 16774
+    },
+    {
+      "eval_name": "eval-2-auto-resolve",
+      "config": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 6,
+      "total": 6,
+      "time_seconds": 114.0,
+      "tokens": 26014
+    },
+    {
+      "eval_name": "eval-2-auto-resolve",
+      "config": "without_skill",
+      "pass_rate": 0.667,
+      "passed": 4,
+      "total": 6,
+      "time_seconds": 98.7,
+      "tokens": 18562
+    },
+    {
+      "eval_name": "eval-3-error-handling",
+      "config": "with_skill",
+      "pass_rate": 1.0,
+      "passed": 6,
+      "total": 6,
+      "time_seconds": 85.9,
+      "tokens": 22764
+    },
+    {
+      "eval_name": "eval-3-error-handling",
+      "config": "without_skill",
+      "pass_rate": 0.5,
+      "passed": 3,
+      "total": 6,
+      "time_seconds": 117.5,
+      "tokens": 18899
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": "100% (18/18)",
+      "mean_time": "98.4s",
+      "mean_tokens": 24084
+    },
+    "without_skill": {
+      "pass_rate": "56% (10/18)",
+      "mean_time": "98.1s",
+      "mean_tokens": 18078
+    },
+    "delta": {
+      "pass_rate": "+44%",
+      "time_seconds": "+0.3s",
+      "tokens": "+6006"
+    }
+  },
+  "notes": [
+    "with_skill achieves 100% pass rate vs 56% without across all 3 evals",
+    "The skill costs ~33% more tokens but doubles the assertion pass rate",
+    "Without-skill consistently misses: hints/HATEOAS, stderr discipline, copy-pasteable flags, structured error context",
+    "Without-skill sometimes produces competent code but misses the dual-audience design patterns"
+  ]
+}

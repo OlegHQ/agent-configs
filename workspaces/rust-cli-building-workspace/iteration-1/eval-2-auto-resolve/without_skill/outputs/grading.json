@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-2-auto-resolve-without_skill",
+  "expectations": [
+    {
+      "text": "Matches workspaces by both UUID/ID and human-friendly name",
+      "passed": true,
+      "evidence": "resolve.rs line 237-238: exact ID match first (`w.id == query`), then case-insensitive name match (`w.name.to_lowercase() == query_lower`). Tests resolve_by_id and resolve_by_name_case_insensitive confirm."
+    },
+    {
+      "text": "Name matching is case-insensitive",
+      "passed": true,
+      "evidence": "resolve.rs line 243: `let query_lower = query.to_lowercase()` compared with `w.name.to_lowercase()`. Test passes 'acme corp' to match 'Acme Corp'."
+    },
+    {
+      "text": "Auto-picks sole workspace with a log message to stderr",
+      "passed": false,
+      "evidence": "resolve.rs line 231-232: when len==1, returns `Ok(workspaces.into_iter().next().unwrap())` — no log message to stderr. No eprintln or tracing call present."
+    },
+    {
+      "text": "On ambiguity, shows copy-pasteable --workspace <value> flags in error",
+      "passed": false,
+      "evidence": "MultipleWorkspaces Display shows a table with NAME and ID columns but says 'Pass --workspace <ID or NAME>' generically. It does NOT show copy-pasteable `--workspace \"Acme Corp\"` flags per candidate — just a table of names/IDs."
+    },
+    {
+      "text": "Error mentions config file as an alternative to flags",
+      "passed": true,
+      "evidence": "resolve.rs line 95: `Tip: if you always use the same workspace, set NOTION_WORKSPACE in your environment.` — mentions env var as alternative. cli.rs line 34: `env = \"NOTION_WORKSPACE\"`. While it's an env var rather than config file, it serves the same purpose of a persistent alternative to flags."
+    },
+    {
+      "text": "Function is async (requires API call to fetch workspaces)",
+      "passed": true,
+      "evidence": "resolve.rs: `pub async fn resolve_workspace(api: &dyn WorkspaceApi, flag: Option<&str>) -> Result<Workspace, ResolveError>` — async function that calls `api.list_workspaces().await`."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-1-output-module-without_skill",
+  "expectations": [
+    {
+      "text": "Has a generic table formatter function (print_table or equivalent)",
+      "passed": false,
+      "evidence": "print_table(tasks: &[Task]) is Task-specific (hardcoded 5 columns, fixed HEADERS array). Not a generic table formatter — it only accepts &[Task]."
+    },
+    {
+      "text": "Routes to JSON when --json is set, table otherwise (dual-mode output)",
+      "passed": true,
+      "evidence": "print_tasks(tasks, format: OutputFormat) matches on Table vs Json and dispatches to print_table or print_json accordingly. list.rs converts the json bool flag to OutputFormat."
+    },
+    {
+      "text": "Has a hint/next-steps function that prints suggestions to stderr",
+      "passed": false,
+      "evidence": "No hint function exists anywhere in the output files. There is no stderr hint/suggestion mechanism."
+    },
+    {
+      "text": "Table output is borderless (no +, |, or --- border characters)",
+      "passed": false,
+      "evidence": "output.rs line 67-68: `let sep: Vec<String> = widths.iter().map(|&w| \"-\".repeat(w)).collect(); write_row(...)` — prints a dashed separator line between header and data rows."
+    },
+    {
+      "text": "Formats due_date for human readability (not raw ISO/Debug)",
+      "passed": true,
+      "evidence": "format_row uses `dt.format(\"%Y-%m-%d %H:%M\").to_string()` — a human-readable date format, not raw ISO or Debug output."
+    },
+    {
+      "text": "Has a type-specific renderer function for Tasks (not generic JSON dump)",
+      "passed": true,
+      "evidence": "print_table is Task-specific with custom columns (ID, TITLE, STATUS, DUE, PRIORITY) and format_row does Task-specific formatting (short ID, date formatting)."
+    }
+  ]
+}

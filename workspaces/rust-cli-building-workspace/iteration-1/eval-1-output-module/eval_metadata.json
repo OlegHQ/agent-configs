@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "output-module-table-formatter",
+  "prompt": "Build a taskr list command with dual-mode output (table for humans, JSON for scripts) for a Task struct with id, title, status, due_date, priority.",
+  "assertions": [
+    {"text": "Has a generic table formatter function (print_table or equivalent)", "type": "code_review"},
+    {"text": "Routes to JSON when --json is set, table otherwise (dual-mode output)", "type": "code_review"},
+    {"text": "Has a hint/next-steps function that prints suggestions to stderr", "type": "code_review"},
+    {"text": "Table output is borderless (no +, |, or --- border characters)", "type": "code_review"},
+    {"text": "Formats due_date for human readability (not raw ISO/Debug)", "type": "code_review"},
+    {"text": "Has a type-specific renderer function for Tasks (not generic JSON dump)", "type": "code_review"}
+  ]
+}

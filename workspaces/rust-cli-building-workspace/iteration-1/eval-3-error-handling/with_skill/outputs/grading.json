@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-3-error-handling-with_skill",
+  "expectations": [
+    {
+      "text": "Error variants carry context fields (path, operation, URL) not just inner errors",
+      "passed": true,
+      "evidence": "error.rs: ApiError::Http has {status, endpoint, body}, ApiError::Network has {host, reason}, ConfigError::NotFound has {path: PathBuf}, IoError::ReadFailed has {path, reason}, AuthError::CredentialRead has {path, reason}. Rich context throughout."
+    },
+    {
+      "text": "Has an error_hint function mapping error types to actionable command suggestions",
+      "passed": true,
+      "evidence": "error.rs: `pub fn error_hint(e: &CliError) -> Option<&'static str>` with detailed match arms returning actionable suggestions like 'run `deployr auth login`', 'run `deployr auth refresh`', 'check your internet connection', etc."
+    },
+    {
+      "text": "Errors output as structured JSON to stderr when --json is set",
+      "passed": true,
+      "evidence": "main.rs render_error_json: builds JSON with error, code, code_name, hint fields and outputs via `eprintln!(\"{json}\")` — confirmed to stderr."
+    },
+    {
+      "text": "Documents exit codes with at least 4 distinct values (0=success, 2=usage, 3=auth, 4=api)",
+      "passed": true,
+      "evidence": "exit-codes.md documents exactly 4 codes: 0=success, 2=usage_error, 3=auth_error, 4=upstream_error. error.rs exit_code() matches these."
+    },
+    {
+      "text": "Human error display shows 'error:' prefix and a separate 'hint:' line",
+      "passed": true,
+      "evidence": "main.rs render_error_human: `eprintln!(\"error: {err}\");` followed by `eprintln!(\"hint:  {hint}\");`. exit-codes.md confirms the format."
+    },
+    {
+      "text": "No raw Debug formatting or library error internals shown to users",
+      "passed": true,
+      "evidence": "All error variants use custom Display via thiserror with plain-English messages. No Debug formatting or raw library errors in user-facing output. Library errors are wrapped with context (e.g. ApiError::Network has {host, reason} not raw reqwest::Error)."
+    }
+  ]
+}

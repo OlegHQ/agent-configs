@@ -1,0 +1,35 @@
+{
+  "run_id": "eval-3-error-handling-without_skill",
+  "expectations": [
+    {
+      "text": "Error variants carry context fields (path, operation, URL) not just inner errors",
+      "passed": false,
+      "evidence": "CliError variants carry generic {message: String, hint: String} fields. The Api variant has an optional status, and NotFound has a resource string, but there are no path, operation, URL, endpoint, or host fields on the variants themselves. Context is baked into message strings at construction time rather than being structured fields."
+    },
+    {
+      "text": "Has an error_hint function mapping error types to actionable command suggestions",
+      "passed": true,
+      "evidence": "Each CliError variant carries a `hint` field set at construction. The `hint()` method extracts it. Constructor functions like auth_expired(), config_missing(), etc. embed actionable suggestions like 'Run `deployr auth login`'. This is functionally equivalent to an error_hint mapping function."
+    },
+    {
+      "text": "Errors output as structured JSON to stderr when --json is set",
+      "passed": false,
+      "evidence": "main.rs line 62: `println!(\"{}\", err.to_json())` — JSON errors go to stdout, not stderr. The comment on line 59 explicitly says 'JSON errors go to stdout'. The assertion requires stderr."
+    },
+    {
+      "text": "Documents exit codes with at least 4 distinct values (0=success, 2=usage, 3=auth, 4=api)",
+      "passed": true,
+      "evidence": "exit-codes.md documents 10 distinct codes (0-9). error.rs defines constants: SUCCESS=0, GENERAL_ERROR=1, AUTH_ERROR=2, API_ERROR=3, CONFIG_ERROR=4, IO_ERROR=5, TIMEOUT_ERROR=6, RATE_LIMIT_ERROR=7, NOT_FOUND_ERROR=8, INVALID_INPUT_ERROR=9. Well exceeds the 4 minimum."
+    },
+    {
+      "text": "Human error display shows 'error:' prefix and a separate 'hint:' line",
+      "passed": true,
+      "evidence": "error.rs Display impl: `write!(f, \"error: {}\\nhint: {}\", self.message(), self.hint())`. exit-codes.md confirms: 'Two lines, always prefixed with error: and hint:'."
+    },
+    {
+      "text": "No raw Debug formatting or library error internals shown to users",
+      "passed": true,
+      "evidence": "All user-facing output uses the custom Display impl which formats with 'error:' and 'hint:'. Library errors are wrapped through From impls that produce plain-English messages (e.g. From<std::io::Error> creates 'I/O error: {e}'). No {:?} Debug formatting in user-facing paths."
+    }
+  ]
+}

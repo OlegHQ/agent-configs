@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "auto-resolution-pattern",
+  "prompt": "Design auto-resolution for --workspace: fetch from API, auto-pick single workspace, show helpful error for multiple, accept ID or name.",
+  "assertions": [
+    {"text": "Matches workspaces by both UUID/ID and human-friendly name", "type": "code_review"},
+    {"text": "Name matching is case-insensitive", "type": "code_review"},
+    {"text": "Auto-picks sole workspace with a log message to stderr", "type": "code_review"},
+    {"text": "On ambiguity, shows copy-pasteable --workspace <value> flags in error", "type": "code_review"},
+    {"text": "Error mentions config file as an alternative to flags", "type": "code_review"},
+    {"text": "Function is async (requires API call to fetch workspaces)", "type": "code_review"}
+  ]
+}

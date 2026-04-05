@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "eval_name": "structured-error-handling",
+  "prompt": "Redesign error types for deployr CLI: structured variants with context, hint function, JSON error mode, proper exit codes.",
+  "assertions": [
+    {"text": "Error variants carry context fields (path, operation, URL) not just inner errors", "type": "code_review"},
+    {"text": "Has an error_hint function mapping error types to actionable command suggestions", "type": "code_review"},
+    {"text": "Errors output as structured JSON to stderr when --json is set", "type": "code_review"},
+    {"text": "Documents exit codes with at least 4 distinct values (0=success, 2=usage, 3=auth, 4=api)", "type": "code_review"},
+    {"text": "Human error display shows 'error:' prefix and a separate 'hint:' line", "type": "code_review"},
+    {"text": "No raw Debug formatting or library error internals shown to users", "type": "code_review"}
+  ]
+}
