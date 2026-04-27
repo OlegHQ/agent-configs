@@ -1,0 +1,5 @@
+name = "linear"
+version = "0.1.0"
+description = "Linear MCP server (remote, OAuth via mcp.linear.app)."
+
+[dependencies]

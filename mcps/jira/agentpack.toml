@@ -1,0 +1,5 @@
+name = "jira"
+version = "0.1.0"
+description = "Atlassian (Jira) MCP server (remote, OAuth via mcp.atlassian.com)."
+
+[dependencies]
