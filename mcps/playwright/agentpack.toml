@@ -1,0 +1,5 @@
+name = "playwright"
+version = "0.1.0"
+description = "Playwright MCP server (local, via npx @playwright/mcp)."
+
+[dependencies]
