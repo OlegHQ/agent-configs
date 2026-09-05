@@ -34,6 +34,8 @@ Do not create extra nesting like `skills/skills/`; each skill is exactly one dir
 
 ## Conventions
 
+The canonical Nudge CLI skill lives here at `skills/nudge-cli/`, including its `references/` directory. Make future Nudge skill changes in this repository, even when prompted by CLI changes in `OlegHQ/nudge`; do not maintain a second copy in the application repository.
+
 1. **Skills:** Use `---` frontmatter at the top of `SKILL.md`. The `description` should state when to load the skill (triggers, keywords, “use when…”).
 2. **Plugins:** Cursor manifest is under `.cursor-plugin/plugin.json`; Claude under `.claude-plugin/plugin.json` where both exist. Respect documented `logo` paths and default discovery folders unless explicitly overriding paths in the manifest.
 3. **Hooks/scripts:** If you add hook scripts, they must be executable where the repo expects that; prefer no-op or clearly safe behavior for templates.
