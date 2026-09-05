@@ -13,6 +13,7 @@ Repository: [github.com/OlegHQ/agent-configs](https://github.com/OlegHQ/agent-co
 | [`plugins/rust-dev/`](plugins/rust-dev/) | Rust-focused skills (design patterns, modularity, performance). Versioned via `agentpack.toml` (`name = "rust-dev"`). |
 | [`plugins/simplifier/`](plugins/simplifier/) | Compact plugin (agents and agentpack stub). |
 | [`skills/`](skills/) | Standalone skills you can copy or wire into a plugin. Each skill lives in `<skill-id>/SKILL.md` with YAML frontmatter. |
+| [`skills/nudge-cli/`](skills/nudge-cli/) | Public Nudge CLI skill covering typed arguments, issue/project workflows, documents and databases, agents, workspace configuration, and imports. Copy the entire directory to retain its references. |
 | [`commands/`](commands/) | Command definitions (e.g. session reflection) with frontmatter for tool agents. |
 | [`workspaces/`](workspaces/) | Eval and benchmark workspaces for skills; not part of consumer plugin payloads. |
 
