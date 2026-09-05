@@ -13,6 +13,7 @@ For features outside the generated catalog, use the documented `nudge api` route
 
 - Help and `nudge --version` are offline. Check `nudge auth status` before workspace work. Bare interactive `nudge` prompts for authentication when needed; Unix can use a restricted-file fallback with a notice, while Windows requires Credential Manager.
 - The default origin is `https://nudge.microapps.space`. Use `--url` or `NUDGE_URL` for another instance; saved credentials are origin-specific.
+- Explicit `--url` and `--token` flags override their environment defaults. `NUDGE_API_TOKEN` takes precedence over saved credentials, so update or unset a stale environment token even after `auth login` saves a new one.
 - If authentication is missing, direct the human to `nudge auth login`, which prompts without echoing the token. Do not ask them to paste a token into chat. For existing automation secrets, use `NUDGE_API_TOKEN`; `auth login --with-token` accepts standard input when persistence is intended.
 - Do not print credential configuration files or tokens. `auth logout` removes the selected origin's stored credential; it does not revoke the server token.
 - Prefer `--output json` when consuming results programmatically. Generated commands return the full MCP envelope (`structuredContent.data` for API results); legacy commands retain raw REST JSON. Automatic output chooses terminal tables or JSON for pipes where supported. Preserve structured errors and nonzero exits.
