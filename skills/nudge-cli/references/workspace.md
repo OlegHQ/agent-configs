@@ -1,167 +1,108 @@
 # Workspace setup, workflow configuration, views, and history
 
-Use this reference for identity discovery, teams, issue statuses, labels, templates, saved boards/lists, and workspace audit questions. Replace uppercase IDs with discovered values and run the command for the requested operation. Repeated collection flags supply the complete replacement set; `--clear-FIELD` empties a collection and `--unset-FIELD` clears a nullable value. `--output json` controls results, not command input.
+Repeated collection flags supply the complete replacement set; resource-specific `--clear-*` flags empty a collection, and `none` clears a single nullable value. `-o json` controls the output format, not command input. Replace uppercase placeholders with discovered IDs/keys.
 
-## Workspace access and people
+## Identity and access
 
 ```sh
+nudge whoami
 nudge auth status
-nudge tool get_access_context --output json
-nudge tool list_actors --limit 50 --output json
-nudge tool list_users --limit 50 --output json
-nudge tool list_teams --limit 50 --output json
+nudge actor list
+nudge actor list --kind service_account
+nudge actor get ACTOR
 ```
 
-The access context identifies the credential's workspace, account, write permission, and optional project restriction. This is the active workspace; these tools do not switch workspaces. A project-scoped credential cannot list all workspace actors or read the workspace audit stream. Selecting a larger MCP toolset does not expand authorization.
+`whoami` shows the current credential's workspace, account, and write access — this is the active workspace; there is no CLI workspace-switch command. `actor list --kind` filters to `user` or `service_account`; an agent's actor ID (used for issue assignment) differs from its delegation ID used by `nudge agent delegate --agent`.
 
-Use `list_actors` for assignees, project leads/members, and actor filters: `kind` is `user` or `service_account`. `list_users` is specifically the human member directory. An agent's delegation target ID from `list_agents` differs from its `serviceAccountId`, which is the actor ID used for assignment. Follow each page's `nextCursor` with `--cursor` until absent; a first page is not the complete directory.
-
-The generated tools expose member discovery, but not workspace creation/switching, invitations, role management, or API-token administration. For administration available through `nudge api` and features that require application settings, consult [administration](administration.md); do not invent generated commands or widen credential scope automatically.
-
-## Search and overview
-
-For “find everything about the rollout,” use the relevant resource searches and combine results with their resource kind and stable ID:
+## Teams and estimate policy
 
 ```sh
-nudge tool list_issues --query rollout --limit 20 --output json
-nudge tool list_projects --query rollout --limit 20 --output json
-nudge tool search_documents --query rollout --limit 20 --output json
-nudge tool get_user --id USER --output json
+nudge team list
+nudge team get NUD
+nudge team create --key NUD --name Nudge
+nudge team estimates NUD
+nudge team estimates NUD --scale fibonacci
+nudge team estimates NUD --enabled=false
 ```
 
-Issue search matches title/description, project search matches name/key, and document search matches title/markdown. Follow each result's continuation independently, then retrieve full records before editing or summarizing details absent from summaries. There is no single generated global-search command. `nudge overview` provides the legacy frontend overview JSON, not a complete export; use focused paginated reads for a complete inventory.
+`team estimates` without flags prints the current policy; with any flag, the policy is replaced entirely — `--enabled`, `--scale` (`exponential`, `fibonacci`, `linear`, `t_shirt`), `--extended`, `--allow-zero`, `--unestimated-as-one` — unset flags keep the team's current values. There is no team rename/delete command in the CLI.
 
-For command semantics, use `nudge tool search_documentation --query "saved views" --output json`. This searches the bundled usage guide, not workspace documents, and returns `structuredContent.results` instead of the ordinary API `structuredContent.data`. Command-specific `--help` remains the source for the installed executable's flags.
-
-## Create a team and connect its project
-
-For “set up a support team for this project,” first list teams and inspect the intended project to avoid creating a duplicate. Then adapt:
+## Workflow statuses
 
 ```sh
-nudge tool create_team --key SUP --name Support --output json
-nudge tool get_team --id TEAM --output json
-nudge tool list_project_teams --project-id PROJECT --output json
-nudge tool link_project_team --project-id PROJECT --team-id TEAM --output json
-nudge tool list_issue_statuses --team-id TEAM --output json
+nudge status list NUD
+nudge status get NUD STATUS
+nudge status create NUD --name Review --category started --color "#336699"
+nudge status update NUD STATUS --position 2
+nudge status update NUD STATUS --name "In review" --color "#663399"
+nudge status delete NUD STATUS
 ```
 
-Capture the created team's stable ID. A team key is not a team ID. `unlink_project_team` takes the same project/team fields and removes the association when that is the requested change; issues must be moved out of that team/project combination before unlinking. Read `get_team` before choosing issue estimates so values respect the team's enabled scale, extended range, and zero policy. Team creation is exposed; team rename/deletion are not exposed by the current generated CLI.
+`--category` is `backlog`, `unstarted`, `started`, `completed`, or `canceled` — the display name does not determine terminal behavior, the category does. `status update --position` moves an existing status to that zero-based position within the team's workflow. Before deleting a used status, move its issues to another valid status first; deletion does not migrate them.
 
-Estimate-policy configuration requires an unscoped workspace write credential:
+## Labels
 
 ```sh
-nudge tool update_team_estimates --team-id TEAM --enabled --scale fibonacci --extended=false --allow-zero=false --unestimated-as-one=false --output json
+nudge label list
+nudge label list --scope project
+nudge label list --scope all
+nudge label create --name bug --color "#ef4444"
+nudge label create --name "Q4 Roadmap" --scope project
+nudge label update LABEL --name "New name"
+nudge label update LABEL --color "#8844cc"
+nudge label delete LABEL
 ```
 
-This replaces the policy: supply every field and preserve current values outside the requested change. Valid scales are `exponential`, `fibonacci`, `linear`, and `t_shirt`. Re-read the team after updating.
+Labels belong to either the `issue` or `project` scope (default `issue`); `--scope all` on `label list` merges both scopes and ignores `--limit`/`--cursor`/`--all`. A name that exists in both scopes needs `--scope` to disambiguate on `label update`/`label delete`. Deleting a label also removes it from every issue/template or project it is assigned to.
 
-## Configure team workflow statuses
-
-For “add a review column between implementation and done,” list the team's statuses, reuse an existing matching status if appropriate, then create and position a new one:
+## Issue templates
 
 ```sh
-nudge tool get_issue_status --team-id TEAM --id STATUS
-nudge tool create_issue_status --team-id TEAM --status-name Review --status-category started --status-color '#336699'
-nudge tool update_issue_status --team-id TEAM --id STATUS --position 2
-nudge tool update_issue_status --team-id TEAM --id STATUS --name 'In review' --color '#663399'
+nudge template list
+nudge template get TEMPLATE
+nudge template create --team NUD --name Bug --title "Bug: " --priority high
+nudge template create --team NUD --name Chore --title Chore --status Todo --label chore
+nudge template update TEMPLATE --title "Fixed: " --priority urgent
+nudge template update TEMPLATE --clear-labels --status none
+nudge template delete TEMPLATE
 ```
 
-Creation uses the default position; `--position 2` moves an existing status to zero-based position 2. To remove an unused status, run `nudge tool delete_issue_status --team-id TEAM --id STATUS`.
+A template's `--status` must belong to its team, and its `--project` must be linked to that team. There is no `apply-template`/`create-from-template` command: to create an issue from a template, read the template with `nudge template get` and copy its defaults into `nudge issue create` flags, replacing the title with the requested one.
 
-Categories are `backlog`, `unstarted`, `started`, `completed`, or `canceled`. A display name such as “Review” does not determine terminal behavior; the category does. The system-managed duplicate status is protected and is not an ordinary category to create or use for status moves. Configuration requires an unscoped workspace write credential. Before deleting a used status, inspect its issues and move only the intended work to another valid status; do not treat deletion as an implicit migration. Re-list statuses to verify ordering.
-
-## Issue and project labels
+## Saved views
 
 ```sh
-nudge tool list_issue_labels --output json
-nudge tool list_project_labels --output json
-nudge tool create_issue_label --name Regression --color '#cc3344' --output json
-nudge tool create_project_label --name Customer --color '#336699' --output json
+nudge view list
+nudge view get VIEW
+nudge view create --name "My work" --assignee me --layout board
+nudge view create --name Backlog --team NUD --status-id Backlog --input filters.json
+nudge view update VIEW --layout list --clear-priorities --favorite=false
+nudge view duplicate VIEW --name "My work (copy)"
+nudge view delete VIEW
 ```
 
-The two label scopes are distinct. Read existing assignments before adding a label, then include every label to retain:
+`--layout` is `list` or `board`; `--priority` (repeatable) and `--status-id` (repeatable) each replace the view's full filter list, cleared with `--clear-priorities`/`--clear-status-ids`; `--clear-labels` clears the label filter. `--assignee`, `--project`, and `--team` accept `none` to remove that single filter. `--input FILE` sets filters/display properties directly from a JSON object (see [argument handling](arguments.md#saved-view-filter-shape) for the filter shape); flags override the matching keys. `view duplicate` copies settings under a new name with favorite reset to false — it does not duplicate the underlying issues.
+
+## Audit
 
 ```sh
-nudge tool update_issue --id ISSUE --labels EXISTING_LABEL --labels NEW_LABEL
-nudge tool update_project --id PROJECT --label-ids EXISTING_PROJECT_LABEL --label-ids NEW_PROJECT_LABEL
-nudge tool update_issue_template --id TEMPLATE --labels EXISTING_LABEL --labels NEW_LABEL
-nudge tool update_label --id LABEL --color '#8844cc'
+nudge audit list
+nudge audit list --limit 50 --cursor CURSOR
 ```
 
-Repeated flags replace the complete assignment set. Use `--clear-labels` on issues/templates or `--clear-label-ids` on projects only when clearing all assignments is intended.
+Returns newest-first events; there is no date/actor/entity filter, so filter returned events locally. For narrower history use the relevant resource instead: `nudge issue comment list ISSUE`, `nudge project status-update list PROJECT`, `nudge document revision list DOCUMENT`, or `nudge agent session get SESSION`.
 
-Both scopes use `nudge tool update_label --id LABEL --name 'New name'` to rename an unused label. Scope cannot be changed, and an assigned label cannot be renamed. `nudge tool delete_label --id LABEL` removes the label **and its workspace issue/template or project assignments**; use an unscoped workspace write credential and only delete when that wider cleanup is intended. Prefer stable IDs even though explicit issue/template writes accept workspace-local legacy names.
-
-## Reusable issue templates
-
-For “make a bug-report template,” list templates, resolve its team/status and any linked project/labels, then create defaults:
+## Token lifecycle
 
 ```sh
-nudge tool list_issue_templates --output json
-nudge tool get_issue_template --id TEMPLATE --output json
+nudge access rotate
+nudge access revoke
 ```
+
+`access rotate` invalidates the current token and returns the new secret once, in the `token` field of its output — never print or paste this into chat or logs. Pipe it straight into `auth login` instead:
 
 ```sh
-nudge tool create_issue_template --name 'Bug report' --team-id TEAM --title 'Bug: ' --description 'Describe reproduction, expected behavior, and actual behavior.' --priority 2 --status-id STATUS --labels LABEL
+nudge access rotate -o json | jq -r .data.token | nudge auth login --with-token
 ```
 
-To detach optional planning defaults while preserving the wording:
-
-```sh
-nudge tool update_issue_template --id TEMPLATE --unset-project-id --unset-status-id --unset-estimate --clear-labels
-```
-
-`nudge tool delete_issue_template --id TEMPLATE` deletes the template. Templates require an unscoped workspace write credential to configure. Their status must belong to the chosen team, and their project must be linked to it. Priority is `0` none, `1` urgent, `2` high, `3` medium, `4` low; omitted create priority defaults to `2`.
-
-To create an issue from a template in the current CLI, read the template and copy its applicable defaults into `create_issue` flags, replacing its title with the requested issue title:
-
-```sh
-nudge tool create_issue --team-id TEAM --status-id STATUS --title 'Bug: retries stop too early' --description 'Describe reproduction, expected behavior, and actual behavior.' --priority 2 --labels LABEL
-```
-
-Resolve a valid status if the template leaves one unset. There is no `apply_template` tool or `templateId` parameter on `create_issue`; creating a template alone does not create issues.
-
-## Saved boards, lists, filters, and favorites
-
-For “save an agent's urgent work as a board,” resolve the actor/team and inspect existing views:
-
-```sh
-nudge tool list_saved_views --output json
-nudge tool get_saved_view --id VIEW --output json
-```
-
-```sh
-nudge tool create_saved_view --name 'Urgent assigned work' --team-id TEAM --assignee-user-id ACTOR --priorities 1 --priorities 2 --layout board --scope active --grouping status --sort priority --show-sub-issues --favorite
-```
-
-Despite the flag's historical name, `--assignee-user-id` accepts both human and agent actor IDs. This stores presentation/filter settings; it does not assign or move issues. `--layout` is `board` or `list`; `--scope` is `active`, `backlog`, `all`, or `archived`; `--sort` is `position`, `priority`, `updated`, or `created`. `--grouping`/`--sub-grouping` can be `status`, `priority`, `assignee`, `project`, or `none`. Completion display uses `--completed-issues all` or `--completed-issues hide`.
-
-Use `update_saved_view` for a precise change:
-
-```sh
-nudge tool update_saved_view --id VIEW --layout list --unset-assignee-user-id --clear-priorities --favorite=false
-```
-
-Omitted settings remain unchanged. Use `--unset-project-id`, `--unset-team-id`, or `--unset-assignee-user-id` to remove a single filter, and `--clear-priorities`, `--clear-status-ids`, or `--clear-labels` to clear a collection. Explicit false disables boolean settings. Read `get_saved_view` before editing advanced filters or display properties, and inspect current help rather than assuming arbitrary filter fields/operators are supported. A saved view is separate from a document database view; database views live in the document's schema.
-
-```sh
-nudge tool duplicate_saved_view --id VIEW --name 'Urgent work copy'
-nudge tool delete_saved_view --id VIEW
-```
-
-These are independent operations. Duplication copies settings with a new ID and favorite reset to false; deletion removes the saved configuration. Re-read the resulting view after a write; duplicating a view does not duplicate its issues.
-
-## Audit and activity investigations
-
-For “what changed in this workspace,” use the audit stream:
-
-```sh
-nudge tool list_audit_events --limit 50 --output json
-nudge tool list_audit_events --limit 50 --cursor CURSOR --output json
-```
-
-It requires an unscoped workspace credential and returns newest-first events, with stable ID ordering for timestamp ties. Continue until the requested period or absent cursor; there is no tool-level date, actor, or entity filter, so filter returned events locally as needed. A removed cursor event requires restarting at page one. New events during paging mean this is not a frozen snapshot; deduplicate by event ID when combining repeated passes.
-
-For a narrower history, choose the relevant supported source: `list_comments --issue-id ISSUE` for discussion, `list_project_updates --project-id PROJECT` for progress reports, `list_document_revisions --id DOCUMENT` for document snapshots, or `get_agent_session --session-id SESSION` for delegation activity. Agent history uses `nextAfterSequence`/`--after-sequence` until `activityPageComplete`, rather than an ordinary cursor. These sources answer different questions; comments alone do not prove the complete edit history.
-
-The current CLI has no general activity-feed, notification-inbox, or mark-notification-read tool. Use the audit and entity history that actually exists and state any missing coverage when answering a historical question. Reads do not repair pending comment audit receipts or agent history; that requires the exact documented mutation retry, with the original key and payload, when recovery is part of the authorized task.
+Use the same `--url` for both commands on a non-default origin. If `NUDGE_API_TOKEN` supplies the old credential, update that environment variable too — `auth login` only updates the saved credential file. `access revoke` immediately ends the current credential's access and cannot be undone from the CLI; on a terminal it asks you to type "revoke", in scripts pass `--yes`. Prefer a dedicated service-account token (rotated with `access rotate`) for automation over a personal/human session token.
