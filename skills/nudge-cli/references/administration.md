@@ -10,7 +10,7 @@ nudge api POST /issues --data '{"teamId":"team_...","title":"..."}'
 nudge api GET /audit-events/page --query limit=10
 ```
 
-`nudge api METHOD PATH [--data JSON|--input FILE] [--query k=v]` calls any route on the configured origin for cases with no dedicated command. PATH may be relative (`/issues`) or absolute (`/api/v1/issues`); it always stays under `/api/v1` on the configured origin. The body comes from `--data` (inline JSON) or `--input` (a file, or `-` for stdin); GET/DELETE usually need neither. It returns raw API JSON, not a `Next steps`-carrying envelope. Prefer a dedicated command whenever one exists — this is the fallback, not the default interface.
+`nudge api METHOD PATH [--data JSON|--input FILE] [--query k=v]` calls any route on the configured origin for cases with no dedicated command. PATH may be relative (`/issues`) or absolute (`/api/v1/issues`); paths beginning `/api/` are preserved, and other paths are prefixed with `/api/v1`, always on the configured origin. The body comes from `--data` (inline JSON) or `--input` (a file, or `-` for stdin); GET/DELETE usually need neither. In JSON mode the API response is under `.data` in the normal CLI envelope; it has no resource-specific follow-up actions. Prefer a dedicated command whenever one exists — this is the fallback, not the default interface.
 
 ## Authentication boundary
 

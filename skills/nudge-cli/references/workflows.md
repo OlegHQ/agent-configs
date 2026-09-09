@@ -175,7 +175,7 @@ nudge document restore doc_000000000000000000000001
 nudge document delete doc_000000000000000000000001   # irreversible, deletes nested pages too
 ```
 
-`document archive`/`document delete` act on the document and every page nested under it; archive is restorable, delete is not. Both accept `--expected-updated-at` (archive/restore) for optimistic concurrency.
+`document archive`/`document delete` act on the document and every page nested under it; archive is restorable, delete is not. Archive and restore accept `--expected-updated-at` for optimistic concurrency; delete does not.
 
 ```sh
 nudge document revision list doc_000000000000000000000001 --limit 5
@@ -203,7 +203,7 @@ nudge agent session list NUD-7
 nudge agent session get SESSION
 ```
 
-Delegation starts a session tracked through claim, heartbeat, report, and completion; `--revision`/`--idempotency-key` protect concurrent writers and safe retries. `--revision` defaults to the session's current value when omitted, and idempotency keys default to a generated value that is echoed in a Note so a failed write can be retried with the exact same key.
+Delegation starts a session tracked through claim, heartbeat, report, and completion; `--revision`/`--idempotency-key` protect concurrent writers and safe retries. `--revision` defaults to the session's current value when omitted, and idempotency keys default to a generated value echoed in a Note. Failed writes include the key and original revision in error details. To retry the identical write, pass both `--idempotency-key` and the original `--revision` explicitly with the unchanged body; omitting the revision fetches fresh state and can invalidate the retry receipt.
 
 The runner loop, from the authorized runner's own credential:
 
