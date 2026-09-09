@@ -11,7 +11,7 @@ For a route with no dedicated command, use `nudge api METHOD PATH` (see [adminis
 
 ## Start here
 
-- Help and `nudge --version` work offline.
+- This skill targets CLI 0.2.1 or newer. Help and `nudge --version` work offline; upgrade an older CLI before using these commands.
 - `nudge whoami` shows the current credential, its workspace, and write access. Run it before workspace work.
 - `nudge auth status` verifies the credential is still accepted.
 - The default origin is `https://nudge.microapps.space`; override with `--url`/`NUDGE_URL`. `--token`/`NUDGE_API_TOKEN` override a saved credential — unset a stale environment token even after `nudge auth login`.
