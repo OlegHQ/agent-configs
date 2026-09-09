@@ -14,7 +14,7 @@ nudge api GET /audit-events/page --query limit=10
 
 ## Authentication boundary
 
-Nudge CLI authentication uses service-account bearer tokens. A token does not turn the caller into the human who created it, even an administrator — product operations that require a human session need the signed-in web app. Do not suggest repeatedly logging into the CLI, an invented admin scope, or exporting browser cookies to bypass this. Prefer a dedicated service-account token (`nudge access rotate`) over a personal/human token for any automation or agent credential, and never echo a token in chat, logs, or command output beyond the one-time `nudge access rotate` result (see [workspace workflows](workspace.md#token-lifecycle) for the safe pipe pattern).
+Nudge CLI authentication uses service-account bearer tokens. A token does not turn the caller into the human who created it, even an administrator — product operations that require a human session need the signed-in web app. Do not suggest repeatedly logging into the CLI, an invented admin scope, or exporting browser cookies to bypass this. Prefer a dedicated service-account token (`nudge access rotate`) over a personal/human token for any automation or agent credential, and never echo a token in chat, logs, or command output beyond the one-time `nudge access rotate` result (see [workspace workflows](workspace.md#token-lifecycle) for the protected-file workflow).
 
 ## What requires the web app
 

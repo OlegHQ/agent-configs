@@ -99,10 +99,15 @@ nudge access rotate
 nudge access revoke
 ```
 
-`access rotate` invalidates the current token and returns the new secret once, in the `token` field of its output — never print or paste this into chat or logs. Pipe it straight into `auth login` instead:
+`access rotate` invalidates the current token and returns the new secret once, in the `token` field of its output — never print or paste this into chat or logs. Capture it in a private temporary file before login so a failed save does not lose the only copy:
 
 ```sh
-nudge access rotate -o json | jq -r .data.token | nudge auth login --with-token
+umask 077
+rotation_dir=$(mktemp -d)
+nudge access rotate -o json > "$rotation_dir/rotation.json"
+# Continue only if rotation succeeded.
+jq -er .data.token "$rotation_dir/rotation.json" | nudge auth login --with-token
+# Keep the private response until the replacement credential is verified.
 ```
 
-Use the same `--url` for both commands on a non-default origin. If `NUDGE_API_TOKEN` supplies the old credential, update that environment variable too — `auth login` only updates the saved credential file. `access revoke` immediately ends the current credential's access and cannot be undone from the CLI; on a terminal it asks you to type "revoke", in scripts pass `--yes`. Prefer a dedicated service-account token (rotated with `access rotate`) for automation over a personal/human session token.
+Use the same `--url` for both commands on a non-default origin. If `NUDGE_API_TOKEN` supplies the old credential, update its authorized secret source too — `auth login` only updates the saved credential. Verify `nudge whoami` with the replacement credential, then remove the temporary response. Do not blindly repeat a timed-out rotation: it may have committed. Recover a lost replacement through an authorized human administrator in the web app. `access revoke` immediately ends the current credential's access and cannot be undone from the CLI; on a terminal it asks you to type "revoke", in scripts pass `--yes`. Prefer a dedicated service-account token (rotated with `access rotate`) for automation over a personal/human session token.
