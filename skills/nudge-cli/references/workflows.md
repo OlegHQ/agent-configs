@@ -30,6 +30,18 @@ nudge issue comment add "$issue_id" --body "Investigating"
 
 ## Issues and projects
 
+### Reconcile active projects (dashboard)
+
+Prefer one call before issuing many `project get` / `issue list` probes:
+
+```sh
+nudge project dashboard -o json
+nudge project dashboard --focus all --sort priority
+nudge project dashboard --team NUD --project PLAT
+```
+
+Returns the same active-projects decision surface as the web dashboard: summary counts, needs-attention signals, ranked next work, active project rows (progress, next checkpoint, lead, primary signal), review items, and due-soon deadlines. Default is a full payload (`full=true`) so agents can reconcile without paging; `--preview` matches the compact web previews. `--focus` is `mine` (default) or `all`; `--sort` is `attention` (default), `priority`, `target`, or `name`. Optional `--team`, `--label`, and repeated `--project` narrow scope. Expand one section with `--section attention|focus|review|deadlines|evidence` (and `--evidence-project` + `--reason` for evidence). Read `.data` in JSON mode; follow suggested next steps for individual projects/issues.
+
 ### List and triage
 
 ```sh
@@ -95,6 +107,7 @@ nudge issue delete NUD-7        # asks you to type the issue key, or pass --yes
 ### Projects, milestones, dependencies, status updates
 
 ```sh
+nudge project dashboard
 nudge project list --query platform
 nudge project get PLAT
 nudge project create --key PLAT --name Platform --lead me --member ana --priority high
