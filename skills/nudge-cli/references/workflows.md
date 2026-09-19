@@ -182,30 +182,36 @@ nudge document update doc_000000000000000000000001 --clear-tags
 
 ### Build a live status dashboard
 
-Write a Markdown file of sole-paragraph `#nudge-widget` links (KPI row with `span=1`, then bar/heatmap/gantt), then create or update a document:
+1. Create (or reuse) a **saved issue view** that defines the data set — same filters as the Issues page.
+2. Write a Markdown file of sole-paragraph `#nudge-widget` links scoped with `in <viewId>` (KPI row `span=1`, compact heatmap `span=1`, charts sharing rows).
 
 ```sh
-cat > /tmp/dashboard.md <<'NUDGE_MARKDOWN'
+VIEW=$(nudge view create --name "Ops board" --scope active -o ids)
+cat > /tmp/dashboard.md <<NUDGE_MARKDOWN
 # Ops dashboard
 
-[Open](/widgets?q=count+issues&as=number&span=1#nudge-widget)
+Scoped to view \`$VIEW\`. Change that view's filters to retarget every card.
 
-[P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
+[Open](/widgets?q=count+issues+in+$VIEW&as=number&span=1#nudge-widget)
 
-[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+[P0](/widgets?q=count+issues+in+$VIEW+where+priority:is:1&as=number&span=1#nudge-widget)
 
-[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
+[P0 share](/widgets?q=ratio+issues+in+$VIEW+where+priority:is:1+over+issues+in+$VIEW&as=progress&span=1#nudge-widget)
 
-[Created](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
+[By status](/widgets?q=count+issues+in+$VIEW+by+status&as=bar&span=1#nudge-widget)
 
-[Due](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
+[Created](/widgets?q=count+issues+in+$VIEW+by+day+createdDate&as=heatmap&span=1#nudge-widget)
+
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial&span=1#nudge-widget)
+
+[Due](/widgets?q=list+issues+in+$VIEW+where+dueDate:is:future+limit+8&as=gantt&span=2#nudge-widget)
 NUDGE_MARKDOWN
 
 nudge document create --title "Ops dashboard" --content-file /tmp/dashboard.md
 # or: nudge document update document_… --content-file /tmp/dashboard.md
 ```
 
-Prefer `--content-file` so `#` is not a shell comment. Full grammar, viz matrix, and `span` rules: [live dashboard widgets](arguments.md#live-dashboard-widgets-in-markdown).
+Prefer `--content-file` so `#` is not a shell comment. Full grammar, view scoping, viz matrix, and `span` rules: [live dashboard widgets](arguments.md#live-dashboard-widgets-in-markdown).
 
 ```sh
 nudge document move doc_000000000000000000000002 --parent doc_000000000000000000000001 --position 0
