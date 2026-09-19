@@ -11,7 +11,7 @@ For a route with no dedicated command, use `nudge api METHOD PATH` (see [adminis
 
 ## Start here
 
-- This skill targets CLI 0.2.1 or newer. Help and `nudge --version` work offline; upgrade an older CLI before using these commands.
+- This skill targets CLI 0.2.1 or newer (`project dashboard` requires a build that includes that command). Help and `nudge --version` work offline; upgrade an older CLI before using these commands.
 - `nudge whoami` shows the current credential, its workspace, and write access. Run it before workspace work.
 - `nudge auth status` verifies the credential is still accepted.
 - The default origin is `https://nudge.microapps.space`; override with `--url`/`NUDGE_URL`. `--token`/`NUDGE_API_TOKEN` override a saved credential — unset a stale environment token even after `nudge auth login`.
@@ -54,7 +54,7 @@ Read only the section relevant to the task:
 
 | User wants to… | Reference |
 | --- | --- |
-| Triage/list/filter issues, create/update/move/assign, relations, comments, duplicates, milestones, project status updates/dependencies/bulk-upsert | [Workflows: issues and projects](references/workflows.md#issues-and-projects) |
+| Triage active projects (one-call dashboard), list/filter issues, create/update/move/assign, relations, comments, duplicates, milestones, project status updates/dependencies/bulk-upsert | [Workflows: issues and projects](references/workflows.md#issues-and-projects) |
 | Write or organize documents, database schemas/records, revisions, archive/restore, list vs. search | [Workflows: documents](references/workflows.md#documents) |
 | Delegate work, run the claim/heartbeat/report loop, respond to or cancel a session, drain a pending queue | [Workflows: agents](references/workflows.md#agents) |
 | Import Linear/documents, bulk-create/bulk-upsert issues or projects | [Workflows: imports and bulk operations](references/workflows.md#imports-and-bulk-operations) |
