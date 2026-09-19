@@ -75,35 +75,65 @@ nudge document update document_abc123 --content-file ./page.md
 
 ## Live dashboard widgets in Markdown
 
-Document pages can embed **live metrics** (counts, progress, radial rings, item lists). Write a **sole-paragraph** relative link with fragment `#nudge-widget`. The web app evaluates the expression on read; `get_document` / `--raw` still returns the marked link (not the computed number). To read metrics as an agent, use `nudge project dashboard -o json` or `nudge issue list` instead.
+Document pages can embed **live metrics** (numbers, progress, radials, item lists, bar charts, heatmaps, schedule bars). Write a **sole-paragraph** relative link with fragment `#nudge-widget`. The web app evaluates the expression on read; `get_document` / `--raw` still returns the marked link (not the computed number). To read metrics as an agent, use `nudge project dashboard -o json` or `nudge issue list` instead.
 
 ### Expression grammar
 
 ```
-count  issues [where <filter> (and <filter>)*]
+count  issues [where <filter> (and <filter>)*] [by status|priority|assignee|project]
+count  issues [where <filter> (and <filter>)*] by day createdDate [weeks 8|12]
 list   issues [where <filter> (and <filter>)*] [limit <n>]
+list   projects [limit <n>]
+ratio  issues [where <filterA>…] over issues [where <filterB>…]
 value  dashboard <path> [focus mine|all] [team <teamId>]
 ratio  dashboard <path> [focus mine|all] [team <teamId>]
 count  database <documentId> [view <viewId>]
 list   database <documentId> [view <viewId>] [limit <n>]
 ```
 
-Optional trailing `as number|progress|radial|items` overrides the default viz (`count`/`value` → number, `ratio` → radial, `list` → items).
+Optional trailing `as number|progress|radial|items|bar|heatmap|gantt` overrides the default:
 
-`<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low.
+| Expression shape | Default `as` |
+|---|---|
+| `count` / `value` | `number` |
+| `list` / `list projects` | `items` |
+| `ratio dashboard …` | `radial` |
+| `ratio issues … over issues …` | `progress` |
+| `count … by status|priority|assignee|project` | `bar` |
+| `count … by day createdDate` | `heatmap` |
+
+`<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low. Date presets include `today`, `past`, `future`, `week` (e.g. `dueDate:is:future`). Status/project/assignee values are **ids** (from `nudge issue status list` / `nudge project list` / members), not display names.
 
 Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionProjectCount`, `summary.reviewProjectCount`, `summary.dueSoonCount`, `summary.immediateCandidateCount`, `summary.startedIssueCount`, `summary.weightedCompletion`, `summary.measurableProjectCount`, `summary.weightCoverage`.
 
+**Gantt note:** `as=gantt` draws schedule bars from existing dates only (issues: created→due; projects: start→target). Skip undated rows. Not a full PM Gantt.
+
+### Layout (`span`)
+
+Optional query param `span=1|2|3` (default `3` = full width). Consecutive sole-paragraph widgets pack into a 3-column grid; use three `span=1` KPIs for a row.
+
 ### Markdown form
 
-Put the human label in the link text; put the expression in `q` (spaces as `+`); set viz with `as`:
+Put the human label in the link text; put the expression in `q` (spaces as `+`); set viz with `as`; optional `span`:
 
 ```md
-[Open P0s](/widgets?q=count+issues+where+priority:is:1&as=number#nudge-widget)
+[Open issues](/widgets?q=count+issues&as=number&span=1#nudge-widget)
 
-[My queue](/widgets?q=list+issues+where+assignee:is:me+limit+5&as=items#nudge-widget)
+[Urgent / P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
 
-[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+mine&as=radial#nudge-widget)
+[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+
+[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
+
+[My queue](/widgets?q=list+issues+where+assignee:is:me+and+priority:is:1,2+limit+5&as=items#nudge-widget)
+
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial#nudge-widget)
+
+[Created (12w)](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
+
+[Due schedule](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
+
+[Projects](/widgets?q=list+projects+limit+10&as=gantt#nudge-widget)
 
 [Tracking rows](/widgets?q=count+database+document_abc123+view+table&as=number#nudge-widget)
 ```
@@ -119,11 +149,21 @@ Rules:
 cat > /tmp/status.md <<'NUDGE_MARKDOWN'
 # Weekly status
 
-[Open P0s](/widgets?q=count+issues+where+priority:is:1&as=number#nudge-widget)
+[Open issues](/widgets?q=count+issues&as=number&span=1#nudge-widget)
+
+[Urgent / P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
+
+[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+
+[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
 
 [My queue](/widgets?q=list+issues+where+assignee:is:me+limit+5&as=items#nudge-widget)
 
-[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+mine&as=radial#nudge-widget)
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial#nudge-widget)
+
+[Created (12w)](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
+
+[Due schedule](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
 NUDGE_MARKDOWN
 
 nudge document create --title "Weekly status" --content-file /tmp/status.md
