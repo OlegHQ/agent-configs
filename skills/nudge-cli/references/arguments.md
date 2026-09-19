@@ -38,6 +38,40 @@ if ($LASTEXITCODE -ne 0) { throw 'Nudge update failed' }
 
 If content must come from a variable instead of a file, write it to a temporary file first rather than interpolating it into the command line, and avoid `Invoke-Expression` to build a Nudge command from workspace text. Native process failures are signaled by `$LASTEXITCODE`; check it after every call in a script.
 
+## Internal entity mentions in Markdown
+
+Issue descriptions, comments, project text, and document `content` are ordinary Markdown. To insert a Notion-style **entity mention** (a selectable chip in the web editor) instead of a plain link, write a relative Markdown link whose fragment is one of the markers below. Unmarked links stay ordinary links.
+
+| Mention | Markdown form |
+| --- | --- |
+| Issue | `[NUD-7](/issues?issue=NUD-7#nudge-issue)` |
+| Project | `[Platform](/projects?project=project_…#nudge-project)` |
+| Document / page | `[Runbook](/documents?document=document_…#nudge-document)` |
+
+Rules:
+
+- Use **relative** `/issues`, `/projects`, or `/documents` paths. Absolute `https://…` URLs are never promoted to mentions.
+- Issues use the human **identifier** (`NUD-7`) in `?issue=`. Projects and documents use their stable IDs (`project_…`, `document_…`).
+- The link text is the cached chip label (identifier, project name, or page title).
+- Do **not** use `#nudge-page` / `#nudge-database` for mentions. Those fragments mark **block embeds** (a whole-block page or inline database). A sole-paragraph embed looks like:
+
+```md
+[Decisions](/documents?document=document_…#nudge-page)
+
+[Tracking](/documents?document=document_…#nudge-database)
+```
+
+Example mid-paragraph mentions in a description file:
+
+```md
+Blocked on [NUD-7](/issues?issue=NUD-7#nudge-issue); see [Runbook](/documents?document=document_abc123#nudge-document) in [Platform](/projects?project=project_abc123#nudge-project).
+```
+
+```sh
+nudge issue update NUD-8 --description-file ./notes.md
+nudge document update document_abc123 --content-file ./page.md
+```
+
 ## Lists and replace-not-append flags
 
 Repeat a scalar list flag to set the full list: `--label bug --label backend`. This **replaces** the resource's current list — include every value you want kept, not just the new one. Use the resource's `--clear-*` flag (`--clear-labels`, `--clear-tags`, `--clear-related-issues`, `--clear-related-projects`, `--clear-members`, `--clear-priorities`, `--clear-status-ids`) to submit an empty list. Use the literal value `none` on a scalar flag (`--assignee none`, `--milestone none`, `--lead none`) to clear a single nullable field — there is no generic `--unset-*` flag.

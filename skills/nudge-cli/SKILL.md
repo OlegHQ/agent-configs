@@ -41,7 +41,7 @@ Ordinary resource commands end with a **Next steps** section: concrete follow-up
 - The literal string `none` clears a nullable field (`--assignee none`, `--milestone none`).
 - A repeated flag (`--label bug --label backend`) **replaces** the resource's full list, it does not append — include every value you want to keep.
 - Resource-specific `--clear-*` flags (`--clear-labels`, `--clear-tags`, `--clear-members`, `--clear-related-issues`, ...) empty a list field; each command's `--help` lists the ones it supports. There is no generic clear/unset scheme.
-- Multi-line text takes a `--description-file`/`--content-file`/`--body-file` PATH, or `-` for stdin, instead of an inline flag.
+- Multi-line text takes a `--description-file`/`--content-file`/`--body-file` PATH, or `-` for stdin, instead of an inline flag. Encode in-app entity chips in that Markdown as marked relative links (`#nudge-issue` / `#nudge-project` / `#nudge-document`); see [argument handling](references/arguments.md#internal-entity-mentions-in-markdown).
 - Complex nested input (document database schemas/rows, saved-view filters, bulk batches) takes `--input FILE` (or `--input -`); flags override the file's top-level keys when both are given.
 
 ## Delete safety
@@ -60,7 +60,7 @@ Read only the section relevant to the task:
 | Import Linear/documents, bulk-create/bulk-upsert issues or projects | [Workflows: imports and bulk operations](references/workflows.md#imports-and-bulk-operations) |
 | Configure teams/estimates, statuses, labels, templates, saved views, find actors, read the audit log, `whoami`, rotate/revoke a token | [Workspace workflows](references/workspace.md) |
 | Reach a web-app-only feature (members, invitations, appearance, media upload, notifications), or call an undocumented route with `nudge api` | [Administration and CLI boundaries](references/administration.md) |
-| Pass multi-line Markdown, quote in PowerShell, or build `--input` JSON for documents/views/bulk batches | [Argument handling](references/arguments.md) |
+| Pass multi-line Markdown, encode internal entity mentions (`#nudge-issue` / `#nudge-project` / `#nudge-document`), quote in PowerShell, or build `--input` JSON for documents/views/bulk batches | [Argument handling](references/arguments.md) |
 
 ## Preserve data and continuation contracts
 
