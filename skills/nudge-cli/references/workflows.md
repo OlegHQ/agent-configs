@@ -191,17 +191,17 @@ nudge document create --title "Projects dashboard" --content-file dashboard.md
 
 `template` prints plain Markdown, works offline, and performs no writes. It includes active/attention/deadline counts, attention and next-work modules, project rows, tracked completion, coverage, and review. Customize the generated queries and mix in normal blocks before creation.
 
-For an existing dashboard, fetch its latest content and revision together:
+For an existing dashboard, fetch its latest content and update timestamp together:
 
 ```sh
 nudge document get DOCUMENT -o json > page.json
 jq -r '.data.content' page.json > page.md
-revision=$(jq -r '.data.revision' page.json)
+updated_at=$(jq -r '.data.updatedAtMs' page.json)
 # Edit page.md, preserving unrelated blocks and widget order.
-nudge document update DOCUMENT --content-file page.md --revision "$revision"
+nudge document update DOCUMENT --content-file page.md --expected-updated-at "$updated_at"
 ```
 
-On exit 5, re-read and reconcile the changes; do not blindly retry with a fresh revision. Read back the saved document to verify the marked links. CLI readback proves stored configuration, not visual layout or live computed values. Use issue identifiers (`NUD-7`) in issue URLs and stable IDs for project/document URLs.
+On exit 5, re-read and reconcile the changes; do not blindly retry with a fresh timestamp. Read back the saved document to verify the marked links. CLI readback proves stored configuration, not visual layout or live computed values. Use issue identifiers (`NUD-7`) in issue URLs and stable IDs for project/document URLs.
 
 For a custom issue dashboard:
 
