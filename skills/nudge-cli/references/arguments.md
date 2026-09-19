@@ -72,6 +72,63 @@ nudge issue update NUD-8 --description-file ./notes.md
 nudge document update document_abc123 --content-file ./page.md
 ```
 
+
+## Live dashboard widgets in Markdown
+
+Document pages can embed **live metrics** (counts, progress, radial rings, item lists). Write a **sole-paragraph** relative link with fragment `#nudge-widget`. The web app evaluates the expression on read; `get_document` / `--raw` still returns the marked link (not the computed number). To read metrics as an agent, use `nudge project dashboard -o json` or `nudge issue list` instead.
+
+### Expression grammar
+
+```
+count  issues [where <filter> (and <filter>)*]
+list   issues [where <filter> (and <filter>)*] [limit <n>]
+value  dashboard <path> [focus mine|all] [team <teamId>]
+ratio  dashboard <path> [focus mine|all] [team <teamId>]
+count  database <documentId> [view <viewId>]
+list   database <documentId> [view <viewId>] [limit <n>]
+```
+
+Optional trailing `as number|progress|radial|items` overrides the default viz (`count`/`value` → number, `ratio` → radial, `list` → items).
+
+`<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low.
+
+Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionProjectCount`, `summary.reviewProjectCount`, `summary.dueSoonCount`, `summary.immediateCandidateCount`, `summary.startedIssueCount`, `summary.weightedCompletion`, `summary.measurableProjectCount`, `summary.weightCoverage`.
+
+### Markdown form
+
+Put the human label in the link text; put the expression in `q` (spaces as `+`); set viz with `as`:
+
+```md
+[Open P0s](/widgets?q=count+issues+where+priority:is:1&as=number#nudge-widget)
+
+[My queue](/widgets?q=list+issues+where+assignee:is:me+limit+5&as=items#nudge-widget)
+
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+mine&as=radial#nudge-widget)
+
+[Tracking rows](/widgets?q=count+database+document_abc123+view+table&as=number#nudge-widget)
+```
+
+Rules:
+
+- Sole paragraph (blank lines around the link) — otherwise it stays an ordinary link.
+- Relative `/widgets?…` only. Absolute `https://…` URLs are never promoted.
+- Do **not** confuse with `#nudge-issue` / `#nudge-project` / `#nudge-document` (mentions) or `#nudge-page` / `#nudge-database` (page/database embeds).
+- Always write via `--content-file` / heredoc (or MCP `content`) so `#` is not treated as a shell comment.
+
+```sh
+cat > /tmp/status.md <<'NUDGE_MARKDOWN'
+# Weekly status
+
+[Open P0s](/widgets?q=count+issues+where+priority:is:1&as=number#nudge-widget)
+
+[My queue](/widgets?q=list+issues+where+assignee:is:me+limit+5&as=items#nudge-widget)
+
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+mine&as=radial#nudge-widget)
+NUDGE_MARKDOWN
+
+nudge document create --title "Weekly status" --content-file /tmp/status.md
+```
+
 ## Lists and replace-not-append flags
 
 Repeat a scalar list flag to set the full list: `--label bug --label backend`. This **replaces** the resource's current list — include every value you want kept, not just the new one. Use the resource's `--clear-*` flag (`--clear-labels`, `--clear-tags`, `--clear-related-issues`, `--clear-related-projects`, `--clear-members`, `--clear-priorities`, `--clear-status-ids`) to submit an empty list. Use the literal value `none` on a scalar flag (`--assignee none`, `--milestone none`, `--lead none`) to clear a single nullable field — there is no generic `--unset-*` flag.

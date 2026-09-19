@@ -178,7 +178,7 @@ nudge document update doc_000000000000000000000001 --content-file page.md
 nudge document update doc_000000000000000000000001 --clear-tags
 ```
 
-`--tag`, `--related-issue`, and `--related-project` replace the full set on the document each time; `--clear-tags`, `--clear-related-issues`, `--clear-related-projects` empty a specific one. For a database document's schema/rows shape and the `--input` JSON keys, see [argument handling](arguments.md#document-input-shape-schema-and-values). When writing `--content-file` / `--description-file` Markdown that should chip-link issues, projects, or pages in the web editor, encode them as marked relative links — see [internal entity mentions](arguments.md#internal-entity-mentions-in-markdown).
+`--tag`, `--related-issue`, and `--related-project` replace the full set on the document each time; `--clear-tags`, `--clear-related-issues`, `--clear-related-projects` empty a specific one. For a database document's schema/rows shape and the `--input` JSON keys, see [argument handling](arguments.md#document-input-shape-schema-and-values). When writing `--content-file` / `--description-file` Markdown that should chip-link issues, projects, or pages in the web editor, encode them as marked relative links — see [internal entity mentions](arguments.md#internal-entity-mentions-in-markdown). For live metric blocks (`#nudge-widget`), see [live dashboard widgets](arguments.md#live-dashboard-widgets-in-markdown).
 
 ```sh
 nudge document move doc_000000000000000000000002 --parent doc_000000000000000000000001 --position 0
