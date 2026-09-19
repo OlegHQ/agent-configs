@@ -182,6 +182,29 @@ nudge document update doc_000000000000000000000001 --clear-tags
 
 ### Build a live status dashboard
 
+For a dashboard equivalent to the Projects screen, first check `nudge document template --help` (requires CLI 0.3.0 or newer), then:
+
+```sh
+nudge document template projects > dashboard.md
+nudge document create --title "Projects dashboard" --content-file dashboard.md
+```
+
+`template` prints plain Markdown, works offline, and performs no writes. It includes active/attention/deadline counts, attention and next-work modules, project rows, tracked completion, coverage, and review. Customize the generated queries and mix in normal blocks before creation.
+
+For an existing dashboard, fetch its latest content and revision together:
+
+```sh
+nudge document get DOCUMENT -o json > page.json
+jq -r '.data.content' page.json > page.md
+revision=$(jq -r '.data.revision' page.json)
+# Edit page.md, preserving unrelated blocks and widget order.
+nudge document update DOCUMENT --content-file page.md --revision "$revision"
+```
+
+On exit 5, re-read and reconcile the changes; do not blindly retry with a fresh revision. Read back the saved document to verify the marked links. CLI readback proves stored configuration, not visual layout or live computed values. Use issue identifiers (`NUD-7`) in issue URLs and stable IDs for project/document URLs.
+
+For a custom issue dashboard:
+
 1. Create (or reuse) a **saved issue view** that defines the data set — same filters as the Issues page.
 2. Write a Markdown file of sole-paragraph `#nudge-widget` links scoped with `in <viewId>` (KPI row `span=1`, compact heatmap `span=1`, charts sharing rows).
 

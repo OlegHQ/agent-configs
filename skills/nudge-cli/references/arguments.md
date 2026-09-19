@@ -75,7 +75,7 @@ nudge document update document_abc123 --content-file ./page.md
 
 ## Live dashboard widgets in Markdown
 
-Document pages can embed **live metrics** (numbers, progress, radials, item lists, bar charts, heatmaps, schedule bars). Write a **sole-paragraph** relative link with fragment `#nudge-widget`. The web app evaluates the expression on read; `get_document` / `--raw` still returns the marked link (not the computed number). To read metrics as an agent, use `nudge project dashboard -o json` or `nudge issue list` instead.
+Document pages can embed **live metrics** (numbers, progress, radials, item lists, bar/donut charts, tables, creation trends, heatmaps, schedules, and project-dashboard modules). Write a **sole-paragraph** relative link with fragment `#nudge-widget`. The web app evaluates the expression on read; `get_document` / `--raw` still returns the marked link (not the computed number). To read metrics as an agent, use `nudge project dashboard -o json` or `nudge issue list` instead.
 
 ### Expression grammar
 
@@ -91,16 +91,28 @@ count  database <documentId> [view <viewId>]
 list   database <documentId> [view <viewId>] [limit <n>]
 ```
 
-Optional trailing `as number|progress|radial|items|bar|heatmap|gantt` overrides the default:
+Issue count/list queries also accept `scope active|all|backlog|archived` and `sort priority|created|updated|position` after filters. Without explicit scope, the saved view's scope applies, or `active` when no view is supplied. Creation charts usually need `scope all` to include completed work. These options do not apply to the two halves of a ratio expression; use saved views for ratio scopes.
+
+Project modules use:
+
+```
+list dashboard attention|focus|projects|review [focus mine|all] [team <teamId>] [sort attention|priority|target|name] [limit 1-50]
+```
+
+The default focus is `all`, sort is `attention`, and module limit is 10. Modules reuse the project's decision policy and authorization. They show when results exceed the returned preview; increasing `limit` does not increase the backend preview cap. Use `nudge project dashboard` for full reconciliation. `focus mine` refers to whoever is viewing the document, not its author.
+
+The link's `as=` must match its data shape. An incompatible visualization shows a configuration error instead of a misleading empty chart. Use:
 
 | Expression shape | Default `as` |
 |---|---|
 | `count` / `value` | `number` |
-| `list` / `list projects` | `items` |
+| `list` / `list projects` | `items` (also `table`; issue/project lists also support `gantt`) |
 | `ratio dashboard …` | `radial` |
 | `ratio issues … over issues …` | `progress` |
-| `count … by status|priority|assignee|project` | `bar` |
-| `count … by day createdDate` | `heatmap` |
+| Grouped issue counts | `bar`, `donut`, or `table` |
+| `count … by day createdDate` | `heatmap` or `trend` |
+| `list dashboard attention` / `focus` / `review` | matching `attention` / `focus` / `review` |
+| `list dashboard projects` | `portfolio` |
 
 ### Data set: saved issue views (`in view_…`)
 
@@ -116,7 +128,7 @@ Scope issue metrics to a **saved issue view** with `in <viewId>` (from `nudge vi
 
 Prefer creating a dedicated view for a dashboard (`nudge view create --name "Ops board" --scope active …`), then reference its id in every issue widget so agents and humans share one filter definition.
 
-`<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low. Date presets include `today`, `past`, `future`, `week` (e.g. `dueDate:is:future`). Status/project/assignee values are **ids** (from `nudge issue status list` / `nudge project list` / members), not display names.
+`<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low. Date presets include `today`, `past`, `future`, `week` (e.g. `dueDate:is:future`). Status/project/assignee values are **ids** (from `nudge status list --team TEAM` / `nudge project list` / members), not display names.
 
 Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionProjectCount`, `summary.reviewProjectCount`, `summary.dueSoonCount`, `summary.immediateCandidateCount`, `summary.startedIssueCount`, `summary.weightedCompletion`, `summary.measurableProjectCount`, `summary.weightCoverage`.
 
@@ -126,7 +138,11 @@ Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionPr
 
 ### Layout (`span`)
 
-Optional query param `span=1|2|3` (default `3` = full width). Consecutive sole-paragraph widgets pack into a 3-column grid; use three `span=1` KPIs for a row. Keep chart cards on the same row heights by using matching spans (e.g. heatmap `span=1` beside two KPI/radial cards).
+Optional query param `span=1|1.5|2|3`: one third, half, two thirds, or full width (default). Use three `span=1` KPIs, two `span=1.5` modules, or a `span=1` plus `span=2` row. Widgets retain document order and pack into a responsive grid; ordinary Markdown blocks span a full row and separate widget groups. Narrow containers stack widgets. Height follows content and stretches within each row.
+
+In the editor, use **Add widget** for the library or **Projects dashboard** for a complete starting layout. Drag the dedicated handle to reorder against widgets or ordinary blocks; use earlier/later buttons for keyboard movement, Settings for width/query, and Duplicate/Remove for iteration. Moves are undoable. Reading a widget link opens the entity; it does not open settings.
+
+Keep widgets as standalone paragraphs with blank lines between them. Preserve normal text, checklists, tables, mentions, and inline database/page blocks when editing a dashboard. Do not represent every note as a widget.
 
 ### Markdown form
 
