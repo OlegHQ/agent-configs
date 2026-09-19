@@ -80,11 +80,11 @@ Document pages can embed **live metrics** (numbers, progress, radials, item list
 ### Expression grammar
 
 ```
-count  issues [where <filter> (and <filter>)*] [by status|priority|assignee|project]
-count  issues [where <filter> (and <filter>)*] by day createdDate [weeks 8|12]
-list   issues [where <filter> (and <filter>)*] [limit <n>]
+count  issues [in <viewId>] [where <filter> (and <filter>)*] [by status|priority|assignee|project]
+count  issues [in <viewId>] [where <filter> (and <filter>)*] by day createdDate [weeks 8|12]
+list   issues [in <viewId>] [where <filter> (and <filter>)*] [limit <n>]
 list   projects [limit <n>]
-ratio  issues [where <filterA>…] over issues [where <filterB>…]
+ratio  issues [in <viewId>] [where <filterA>…] over issues [in <viewId>] [where <filterB>…]
 value  dashboard <path> [focus mine|all] [team <teamId>]
 ratio  dashboard <path> [focus mine|all] [team <teamId>]
 count  database <documentId> [view <viewId>]
@@ -102,38 +102,54 @@ Optional trailing `as number|progress|radial|items|bar|heatmap|gantt` overrides 
 | `count … by status|priority|assignee|project` | `bar` |
 | `count … by day createdDate` | `heatmap` |
 
+### Data set: saved issue views (`in view_…`)
+
+Scope issue metrics to a **saved issue view** with `in <viewId>` (from `nudge view list` / `nudge view create`). The widget reuses that view's **scope, team, project, and filters** — the same filtering engine as the Issues page — then ANDs any extra `where` atoms. Omit `in` for workspace-wide active issues (plus optional `where`). Database widgets still use `view <databaseViewId>` (database schema views, not issue views).
+
+```md
+[Open in O1](/widgets?q=count+issues+in+view_da5ce092849348a618a38390&as=number&span=1#nudge-widget)
+
+[P0 in O1](/widgets?q=count+issues+in+view_da5ce092849348a618a38390+where+priority:is:1&as=number&span=1#nudge-widget)
+
+[By status in O1](/widgets?q=count+issues+in+view_da5ce092849348a618a38390+by+status&as=bar&span=1#nudge-widget)
+```
+
+Prefer creating a dedicated view for a dashboard (`nudge view create --name "Ops board" --scope active …`), then reference its id in every issue widget so agents and humans share one filter definition.
+
 `<filter>` uses the same atoms as issue saved views: `field:operator:values` with fields `status|assignee|agent|priority|labels|project|relation|dueDate|createdDate|updatedDate` and operators `is|is_not|none|before|after`. Use `assignee:is:me` for the current credential. Priority values are `1` urgent … `4` low. Date presets include `today`, `past`, `future`, `week` (e.g. `dueDate:is:future`). Status/project/assignee values are **ids** (from `nudge issue status list` / `nudge project list` / members), not display names.
 
 Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionProjectCount`, `summary.reviewProjectCount`, `summary.dueSoonCount`, `summary.immediateCandidateCount`, `summary.startedIssueCount`, `summary.weightedCompletion`, `summary.measurableProjectCount`, `summary.weightCoverage`.
 
 **Gantt note:** `as=gantt` draws schedule bars from existing dates only (issues: created→due; projects: start→target). Skip undated rows. Not a full PM Gantt.
 
+**Heatmap note:** default window is **8 weeks** (`weeks 8`); use `weeks 12` only when needed. Cells are compact (contribution-graph style) — keep heatmaps at `span=1` or `span=2`, not full width.
+
 ### Layout (`span`)
 
-Optional query param `span=1|2|3` (default `3` = full width). Consecutive sole-paragraph widgets pack into a 3-column grid; use three `span=1` KPIs for a row.
+Optional query param `span=1|2|3` (default `3` = full width). Consecutive sole-paragraph widgets pack into a 3-column grid; use three `span=1` KPIs for a row. Keep chart cards on the same row heights by using matching spans (e.g. heatmap `span=1` beside two KPI/radial cards).
 
 ### Markdown form
 
 Put the human label in the link text; put the expression in `q` (spaces as `+`); set viz with `as`; optional `span`:
 
 ```md
-[Open issues](/widgets?q=count+issues&as=number&span=1#nudge-widget)
+[Open issues](/widgets?q=count+issues+in+view_abc123&as=number&span=1#nudge-widget)
 
-[Urgent / P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
+[Urgent / P0](/widgets?q=count+issues+in+view_abc123+where+priority:is:1&as=number&span=1#nudge-widget)
 
-[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+[P0 share](/widgets?q=ratio+issues+in+view_abc123+where+priority:is:1+over+issues+in+view_abc123&as=progress&span=1#nudge-widget)
 
-[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
+[By status](/widgets?q=count+issues+in+view_abc123+by+status&as=bar&span=1#nudge-widget)
 
-[My queue](/widgets?q=list+issues+where+assignee:is:me+and+priority:is:1,2+limit+5&as=items#nudge-widget)
+[My queue](/widgets?q=list+issues+in+view_abc123+where+assignee:is:me+limit+5&as=items&span=1#nudge-widget)
 
-[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial#nudge-widget)
+[Created (8w)](/widgets?q=count+issues+in+view_abc123+by+day+createdDate&as=heatmap&span=1#nudge-widget)
 
-[Created (12w)](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial&span=1#nudge-widget)
 
-[Due schedule](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
+[Due schedule](/widgets?q=list+issues+in+view_abc123+where+dueDate:is:future+limit+8&as=gantt&span=2#nudge-widget)
 
-[Projects](/widgets?q=list+projects+limit+10&as=gantt#nudge-widget)
+[Projects](/widgets?q=list+projects+limit+8&as=gantt&span=1#nudge-widget)
 
 [Tracking rows](/widgets?q=count+database+document_abc123+view+table&as=number#nudge-widget)
 ```
@@ -149,21 +165,19 @@ Rules:
 cat > /tmp/status.md <<'NUDGE_MARKDOWN'
 # Weekly status
 
-[Open issues](/widgets?q=count+issues&as=number&span=1#nudge-widget)
+[Open issues](/widgets?q=count+issues+in+view_abc123&as=number&span=1#nudge-widget)
 
-[Urgent / P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
+[Urgent / P0](/widgets?q=count+issues+in+view_abc123+where+priority:is:1&as=number&span=1#nudge-widget)
 
-[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+[P0 share](/widgets?q=ratio+issues+in+view_abc123+where+priority:is:1+over+issues+in+view_abc123&as=progress&span=1#nudge-widget)
 
-[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
+[By status](/widgets?q=count+issues+in+view_abc123+by+status&as=bar&span=1#nudge-widget)
 
-[My queue](/widgets?q=list+issues+where+assignee:is:me+limit+5&as=items#nudge-widget)
+[Created (8w)](/widgets?q=count+issues+in+view_abc123+by+day+createdDate&as=heatmap&span=1#nudge-widget)
 
-[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial#nudge-widget)
+[Portfolio](/widgets?q=ratio+dashboard+summary.weightedCompletion+focus+all&as=radial&span=1#nudge-widget)
 
-[Created (12w)](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
-
-[Due schedule](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
+[Due schedule](/widgets?q=list+issues+in+view_abc123+where+dueDate:is:future+limit+8&as=gantt&span=2#nudge-widget)
 NUDGE_MARKDOWN
 
 nudge document create --title "Weekly status" --content-file /tmp/status.md
