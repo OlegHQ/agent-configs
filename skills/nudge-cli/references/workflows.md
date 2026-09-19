@@ -180,6 +180,33 @@ nudge document update doc_000000000000000000000001 --clear-tags
 
 `--tag`, `--related-issue`, and `--related-project` replace the full set on the document each time; `--clear-tags`, `--clear-related-issues`, `--clear-related-projects` empty a specific one. For a database document's schema/rows shape and the `--input` JSON keys, see [argument handling](arguments.md#document-input-shape-schema-and-values). When writing `--content-file` / `--description-file` Markdown that should chip-link issues, projects, or pages in the web editor, encode them as marked relative links — see [internal entity mentions](arguments.md#internal-entity-mentions-in-markdown). For live metric blocks (`#nudge-widget`), see [live dashboard widgets](arguments.md#live-dashboard-widgets-in-markdown).
 
+### Build a live status dashboard
+
+Write a Markdown file of sole-paragraph `#nudge-widget` links (KPI row with `span=1`, then bar/heatmap/gantt), then create or update a document:
+
+```sh
+cat > /tmp/dashboard.md <<'NUDGE_MARKDOWN'
+# Ops dashboard
+
+[Open](/widgets?q=count+issues&as=number&span=1#nudge-widget)
+
+[P0](/widgets?q=count+issues+where+priority:is:1&as=number&span=1#nudge-widget)
+
+[P0 share](/widgets?q=ratio+issues+where+priority:is:1+over+issues&as=progress&span=1#nudge-widget)
+
+[By status](/widgets?q=count+issues+by+status&as=bar#nudge-widget)
+
+[Created](/widgets?q=count+issues+by+day+createdDate+weeks+12&as=heatmap#nudge-widget)
+
+[Due](/widgets?q=list+issues+where+dueDate:is:future+limit+12&as=gantt#nudge-widget)
+NUDGE_MARKDOWN
+
+nudge document create --title "Ops dashboard" --content-file /tmp/dashboard.md
+# or: nudge document update document_… --content-file /tmp/dashboard.md
+```
+
+Prefer `--content-file` so `#` is not a shell comment. Full grammar, viz matrix, and `span` rules: [live dashboard widgets](arguments.md#live-dashboard-widgets-in-markdown).
+
 ```sh
 nudge document move doc_000000000000000000000002 --parent doc_000000000000000000000001 --position 0
 nudge document move doc_000000000000000000000002 --parent none
