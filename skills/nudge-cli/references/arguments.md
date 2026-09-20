@@ -99,7 +99,7 @@ Project modules use:
 list dashboard attention|focus|projects|review [focus mine|all] [team <teamId>] [sort attention|priority|target|name] [limit 1-50]
 ```
 
-The default focus is `all`, sort is `attention`, and module limit is 10. Modules reuse the project's decision policy and authorization. They show when results exceed the returned preview; increasing `limit` does not increase the backend preview cap. Use `nudge project dashboard` for full reconciliation. `focus mine` refers to whoever is viewing the document, not its author.
+The default focus is `all`, sort is `attention`, and module limit is 10. Modules reuse the project's decision policy and authorization. Document modules request full dashboard results; the limit controls visible rows within the bounded server response. Use `nudge project dashboard` for full reconciliation. `focus mine` refers to whoever is viewing the document, not its author.
 
 The link's `as=` must match its data shape. An incompatible visualization shows a configuration error instead of a misleading empty chart. Use:
 
@@ -111,7 +111,7 @@ The link's `as=` must match its data shape. An incompatible visualization shows 
 | `ratio issues … over issues …` | `progress` |
 | Grouped issue counts | `bar`, `donut`, or `table` |
 | `count … by day createdDate` | `heatmap` or `trend` |
-| `list dashboard attention` / `focus` / `review` | matching `attention` / `focus` / `review` |
+| `list dashboard attention` / `focus` / `review` | matching `attention` / `focus` / `review`; focus also supports `table` |
 | `list dashboard projects` | `portfolio` |
 
 ### Data set: saved issue views (`in view_…`)
@@ -287,3 +287,19 @@ key, name, description, color, icon, priority, labelIds, leadId, memberIds, star
 ```
 
 As with issues, include `id` on an item to patch an existing project (the ID must already exist) and omit it to create one. Both bulk commands validate every item before executing any of them, then run one at a time; use `--dry-run` to validate without writing, and `--rollback-on-error` to delete successful creates if any item in the batch fails (existing-record patches are not rolled back).
+
+### Dynamic action tables
+
+Use the existing dashboard focus policy for actionable tables, rather than a static Do now table:
+
+```text
+list dashboard focus projects project_a,project_b focus all assignee user_member readiness ready urgency soon min-score 12 limit 5 as table
+```
+
+All clauses are optional. `projects` accepts comma-separated stable project IDs (up to 100). `assignee` accepts a user or service-account ID; `focus mine` means the viewer and excludes unassigned work. Use `focus all assignee …` for a fixed human or agent. Readiness is `ready` (default), `blocked`, or `all`. Urgency is `all` (default), `now` (urgent or due today/overdue), or `soon` (now plus due within seven days). `min-score` accepts 0–100.
+
+Encode the expression in the existing standalone widget link with `as=table`. These filters affect focus rows; project selection scopes the dashboard. Tables refresh every 60 seconds while mounted and show owner, estimate, effective deadline, readiness, linked blockers and score details. Completing a blocker makes its dependent eligible on refresh; related links do not block. Missing or inaccessible blockers remain blocked without revealing restricted details.
+
+Urgency tier precedes score. Score is project priority weight ×4 + task priority weight ×2 + unlocking work (capped at 2) + started (1). Projects take turns within each tier. This orders work, not evidence strength or approval probability. Estimates do not silently change priority. The footer sums visible rows only when team scales are comparable; estimates are points or team sizes, not minutes. Unknown estimates stay unknown.
+
+CLI: `nudge project dashboard --project APP --assignee user_member --readiness ready --urgency soon --min-score 12 --timezone Europe/Zagreb`. Check installed help before using new flags. API fallback: GET `/api/v1/projects/dashboard` with repeated `projectId`, `assigneeId`, `focus=all`, `readiness`, `urgency`, `minScore`, `timezone`, and `full=true`.

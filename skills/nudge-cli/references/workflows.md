@@ -328,3 +328,11 @@ nudge project bulk-upsert --input projects.json --dry-run
 ```
 
 Each file holds a JSON array of items, or an object like `{"issues": [...]}` / `{"projects": [...]}`, up to 100 items. Field names are verbatim API names — see [argument handling](arguments.md#bulk-input-field-names) for the exact list per resource. Items are validated first, then executed one by one; inspect every item's result, not just an aggregate success count. `--rollback-on-error` deletes only the successful creates from that run if any item fails — it does not undo patches applied to already-existing records. `bulk-upsert` patches an item that has an `id` field and creates one that omits it.
+
+### Keep Do now and presence plans dynamic
+
+Maintain one canonical human dashboard with focus table widgets. Separate ready human outcomes, blocked human reviews, agent preparation and project-specific work with explicit owner/project/readiness filters. Express online presence through the same high-level outcome records as other work.
+
+Link agent preparation as `blocks` the human review. Put required human inputs in separate high-level outcomes when they block preparation. Do not split internal commands, screenshots or crossposts into human chores. Each scheduled outcome needs an owner, milestone, due date, completion proof and an estimate in the team's actual units; flag provisional estimates. Distinguish internal targets from verified external deadlines.
+
+Update issues, estimates, priorities and blocking relations first. The table supplies current actions, urgency and visible workload; do not copy its rows, dates or totals into prose. Keep narrative for decisions, context and source-backed assessments. Preserve user notes and use document optimistic concurrency. Read the resulting API selection back, including blocked and ready rows. Never mark real preparation Done merely to test a widget.

@@ -62,6 +62,8 @@ Read only the section relevant to the task:
 | Reach a web-app-only feature (members, invitations, appearance, media upload, notifications), or call an undocumented route with `nudge api` | [Administration and CLI boundaries](references/administration.md) |
 | Pass multi-line Markdown, encode entity mentions or `#nudge-widget` metrics, quote in PowerShell, or build `--input` JSON for documents/views/bulk batches | [Argument handling](references/arguments.md) |
 
+For dynamic Do now, workload and presence dashboards, use native `list dashboard focus … as table` blocks with project, owner, readiness and urgency filters. Maintain task fields and blocking relations instead of static action tables. See [dynamic action tables](references/arguments.md#dynamic-action-tables) and [maintenance workflow](references/workflows.md#keep-do-now-and-presence-plans-dynamic).
+
 ## Preserve data and continuation contracts
 
 - Reuse `nextCursor` with `--cursor` and the same filters until it is absent; `--all` follows pagination client-side up to 1000 items.
