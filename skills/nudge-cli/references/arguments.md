@@ -140,7 +140,7 @@ Dashboard `<path>` allowlist: `summary.activeProjectCount`, `summary.attentionPr
 
 Optional query param `span=1|1.5|2|3`: one third, half, two thirds, or full width (default). Use three `span=1` KPIs, two `span=1.5` modules, or a `span=1` plus `span=2` row. Widgets retain document order and pack into a responsive grid; ordinary Markdown blocks span a full row and separate widget groups. Narrow containers stack widgets. Height follows content and stretches within each row.
 
-In the editor, use **Add widget** for the library or **Projects dashboard** for a complete starting layout. Drag the dedicated handle to reorder against widgets or ordinary blocks; use earlier/later buttons for keyboard movement, Settings for width/query, and Duplicate/Remove for iteration. Moves are undoable. Reading a widget link opens the entity; it does not open settings.
+In the editor, use **Add widget** for the library or the **Projects dashboard** slash command for a complete starting layout. Drag the dedicated handle to reorder against widgets or ordinary blocks; use earlier/later buttons for keyboard movement, Settings for width/query, and Duplicate/Remove for iteration. Moves are undoable. Reading a widget link opens the entity; it does not open settings.
 
 Keep widgets as standalone paragraphs with blank lines between them. Preserve normal text, checklists, tables, mentions, and inline database/page blocks when editing a dashboard. Do not represent every note as a widget.
 
@@ -303,3 +303,9 @@ Encode the expression in the existing standalone widget link with `as=table`. Th
 Urgency tier precedes score. Score is project priority weight ×4 + task priority weight ×2 + unlocking work (capped at 2) + started (1). Projects take turns within each tier. This orders work, not evidence strength or approval probability. Estimates do not silently change priority. The footer sums visible rows only when team scales are comparable; estimates are points or team sizes, not minutes. Unknown estimates stay unknown.
 
 CLI: `nudge project dashboard --project APP --assignee user_member --readiness ready --urgency soon --min-score 12 --timezone Europe/Zagreb`. Check installed help before using new flags. API fallback: GET `/api/v1/projects/dashboard` with repeated `projectId`, `assigneeId`, `focus=all`, `readiness`, `urgency`, `minScore`, `timezone`, and `full=true`.
+
+### Visual hierarchy and customization
+
+Lead human dashboards with a compact grid of critical counts, attention cards, a clearly named work-completion ring, grouped status/owner charts and a timeline; place detailed action tables below. Consecutive standalone widget paragraphs form the grid: `span=1` is one third, `1.5` half, `2` two thirds, `3` full width. Scope all cards deliberately. Completion is tracked work, not readiness for an unrelated decision. Timeline bars represent creation-to-due dates, not hours spent.
+
+Use Add widget for an individual card. The whole-project template is available through the slash menu, not a persistent button on every document. Card settings separate data/filters, display and width; replacing with a preset replaces that card’s query. Counts support number display; progress bars and rings require ratios. Grouped counts support bar/donut/table. Never turn a raw count into a percentage.
