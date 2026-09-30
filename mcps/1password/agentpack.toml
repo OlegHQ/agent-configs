@@ -1,0 +1,5 @@
+name = "1password"
+version = "0.1.0"
+description = "1Password MCP server (local desktop app integration; requires 1Password MCP enabled)."
+
+[dependencies]
