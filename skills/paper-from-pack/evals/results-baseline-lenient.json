@@ -1,0 +1,647 @@
+[
+ {
+  "case": "e01-ieee-conf",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_compiles",
+    "pass": true,
+    "detail": "1 pages"
+   },
+   {
+    "type": "no_layout_hacks",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "doc_class",
+    "pass": true,
+    "detail": "\\documentclass[conference]{IEEEtran}"
+   },
+   {
+    "type": "pdf_pages_max",
+    "pass": true,
+    "detail": "1 pages (max 4)"
+   },
+   {
+    "type": "no_identity",
+    "pass": true,
+    "detail": "0 files scanned"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": false,
+    "detail": "cites without refs.bib"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "15 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": false,
+    "detail": "not in pack: ['22nd', '40th']"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 12,
+  "total": 14,
+  "mode": "baseline",
+  "seconds": 62,
+  "exit_code": 0
+ },
+ {
+  "case": "e03-magazine",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "words_max",
+    "pass": true,
+    "detail": "1455 words (1205 + 1 floats x 250)"
+   },
+   {
+    "type": "abstract_max",
+    "pass": true,
+    "detail": "abstract 137 words"
+   },
+   {
+    "type": "refs_max",
+    "pass": true,
+    "detail": "2 references"
+   },
+   {
+    "type": "insight_bullets",
+    "pass": true,
+    "detail": "3 bullets"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": true,
+    "detail": "no refs.bib (inline references not checked)"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "20 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": false,
+    "detail": "not in pack: ['22nd', '40th']"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 12,
+  "total": 13,
+  "mode": "baseline",
+  "seconds": 78,
+  "exit_code": 0
+ },
+ {
+  "case": "e05-prose",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "words_range",
+    "pass": false,
+    "detail": "699 words (699 + 1 floats x 0)"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": true,
+    "detail": "no refs.bib (inline references not checked)"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "18 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": true,
+    "detail": "not in pack: []"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 9,
+  "total": 10,
+  "mode": "baseline",
+  "seconds": 78,
+  "exit_code": 0
+ },
+ {
+  "case": "e06-talk",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "words_max",
+    "pass": true,
+    "detail": "374 words (374 + 0 floats x 0)"
+   },
+   {
+    "type": "abstract_max",
+    "pass": true,
+    "detail": "abstract 128 words"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "13 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": false,
+    "detail": "not in pack: ['9', '9', '16', '16', '23', '23', '27', '27']"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 9,
+  "total": 10,
+  "mode": "baseline",
+  "seconds": 37,
+  "exit_code": 0
+ },
+ {
+  "case": "e08-outline",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "no_prose_paragraphs",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "fact_sheet_present",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "12 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 7,
+  "total": 7,
+  "mode": "baseline",
+  "seconds": 42,
+  "exit_code": 0
+ },
+ {
+  "case": "e09-waits",
+  "results": [
+   {
+    "type": "no_files",
+    "pass": false,
+    "detail": "found ['paper.pdf', 'paper.tex']"
+   },
+   {
+    "type": "response_mentions",
+    "pass": false,
+    "detail": "not mentioned ['(?i)WAITS']"
+   }
+  ],
+  "passed": 0,
+  "total": 2,
+  "mode": "baseline",
+  "seconds": 53,
+  "exit_code": 0
+ },
+ {
+  "case": "e10-unsupported",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "has_to_verify",
+    "pass": false,
+    "detail": "0 markers"
+   },
+   {
+    "type": "no_unsupported_claim",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "open_mentions",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "words_range",
+    "pass": true,
+    "detail": "736 words (736 + 1 floats x 0)"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": true,
+    "detail": "no refs.bib (inline references not checked)"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "19 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": true,
+    "detail": "not in pack: []"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 12,
+  "total": 13,
+  "mode": "baseline",
+  "seconds": 64,
+  "exit_code": 0
+ },
+ {
+  "case": "e11-fakeref",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_compiles",
+    "pass": true,
+    "detail": "1 pages"
+   },
+   {
+    "type": "no_layout_hacks",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_pages_max",
+    "pass": true,
+    "detail": "1 pages (max 4)"
+   },
+   {
+    "type": "fake_ref_handled",
+    "pass": true,
+    "detail": "cited_in_text=False flagged_in_open=True"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": false,
+    "detail": "cites without refs.bib"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": false,
+    "detail": "-1 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": false,
+    "detail": "not in pack: ['22nd', '40th']"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 10,
+  "total": 13,
+  "mode": "baseline",
+  "seconds": 57,
+  "exit_code": 0
+ },
+ {
+  "case": "e12-overlimit",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_compiles",
+    "pass": true,
+    "detail": "2 pages"
+   },
+   {
+    "type": "no_layout_hacks",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_pages_max",
+    "pass": true,
+    "detail": "2 pages (max 2)"
+   },
+   {
+    "type": "open_mentions",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_present",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": false,
+    "detail": "cites without refs.bib"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": true,
+    "detail": "17 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": true,
+    "detail": "not in pack: []"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 13,
+  "total": 14,
+  "mode": "baseline",
+  "seconds": 64,
+  "exit_code": 0
+ },
+ {
+  "case": "e13-blind-leak",
+  "results": [
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_compiles",
+    "pass": true,
+    "detail": "1 pages"
+   },
+   {
+    "type": "no_layout_hacks",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "pdf_pages_max",
+    "pass": true,
+    "detail": "1 pages (max 3)"
+   },
+   {
+    "type": "no_identity",
+    "pass": true,
+    "detail": "0 files scanned"
+   },
+   {
+    "type": "refs_in_pack",
+    "pass": false,
+    "detail": "cites without refs.bib"
+   },
+   {
+    "type": "files_exist",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "claims_table",
+    "pass": false,
+    "detail": "-1 rows"
+   },
+   {
+    "type": "open_sections",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "ai_statement",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "numbers_in_pack",
+    "pass": false,
+    "detail": "not in pack: ['22nd', '40th']"
+   },
+   {
+    "type": "no_banned_phrases",
+    "pass": true,
+    "detail": ""
+   },
+   {
+    "type": "network_log_ok",
+    "pass": true,
+    "detail": "no network.log (no scripted requests)"
+   }
+  ],
+  "passed": 10,
+  "total": 13,
+  "mode": "baseline",
+  "seconds": 59,
+  "exit_code": 0
+ }
+]

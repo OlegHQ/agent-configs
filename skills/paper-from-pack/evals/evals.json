@@ -1,0 +1,796 @@
+{
+ "version": 1,
+ "cases": [
+  {
+   "id": "e01-ieee-conf",
+   "code": "E1",
+   "pack": "cases/e01-ieee-conf/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "doc_class",
+     "regex": "IEEEtran"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 4
+    },
+    {
+     "type": "no_identity",
+     "strings": [
+      "Alex Rowan",
+      "Rowan",
+      "Northwind",
+      "rowanlabs",
+      "flakeguard",
+      "alex.rowan"
+     ]
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e02-acm",
+   "code": "E2",
+   "pack": "cases/e02-acm/PACK.md",
+   "baseline": false,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "doc_class",
+     "regex": "acmart"
+    },
+    {
+     "type": "doc_option",
+     "regex": "sigconf"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 6,
+     "content_max": 5
+    },
+    {
+     "type": "no_identity",
+     "strings": [
+      "Alex Rowan",
+      "Rowan",
+      "Northwind",
+      "rowanlabs",
+      "flakeguard",
+      "alex.rowan"
+     ]
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e03-magazine",
+   "code": "E3",
+   "pack": "cases/e03-magazine/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.md"
+     ]
+    },
+    {
+     "type": "words_max",
+     "max": 4200,
+     "float_cost": 250
+    },
+    {
+     "type": "abstract_max",
+     "max": 150
+    },
+    {
+     "type": "refs_max",
+     "max": 15
+    },
+    {
+     "type": "insight_bullets",
+     "n": 3
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e04-pattern",
+   "code": "E4",
+   "pack": "cases/e04-pattern/PACK.md",
+   "baseline": false,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "doc_class",
+     "regex": "llncs"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 10
+    },
+    {
+     "type": "contains_count",
+     "regex": "(?i)forces",
+     "min": 3
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e05-prose",
+   "code": "E5",
+   "pack": "cases/e05-prose/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.md"
+     ]
+    },
+    {
+     "type": "words_range",
+     "min": 800,
+     "max": 1000
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e06-talk",
+   "code": "E6",
+   "pack": "cases/e06-talk/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.md"
+     ]
+    },
+    {
+     "type": "words_max",
+     "max": 600
+    },
+    {
+     "type": "abstract_max",
+     "max": 150
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e07-abstract",
+   "code": "E7",
+   "pack": "cases/e07-abstract/PACK.md",
+   "baseline": false,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "doc_class",
+     "regex": "IEEEtran"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 2,
+     "content_max": 1
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e08-outline",
+   "code": "E8",
+   "pack": "cases/e08-outline/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "OUTLINE.md|DRAFT.md"
+     ]
+    },
+    {
+     "type": "no_prose_paragraphs",
+     "max_words": 30
+    },
+    {
+     "type": "fact_sheet_present"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e09-waits",
+   "code": "E9",
+   "pack": "cases/e09-waits/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "no_files",
+     "globs": [
+      "DRAFT*",
+      "OUTLINE*",
+      "*.pdf",
+      "*.tex"
+     ]
+    },
+    {
+     "type": "response_mentions",
+     "patterns": [
+      "(?i)WAITS",
+      "(?i)(release|v2|dependency)"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "e10-unsupported",
+   "code": "E10",
+   "pack": "cases/e10-unsupported/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.md"
+     ]
+    },
+    {
+     "type": "has_to_verify",
+     "min": 1
+    },
+    {
+     "type": "no_unsupported_claim",
+     "regex": "(?i)(lower|cut|reduc|sav)\\w*[^.\\n]{0,60}(cost|spend|developer time|productiv)[^.\\n]*\\d"
+    },
+    {
+     "type": "open_mentions",
+     "regex": "(?i)cost"
+    },
+    {
+     "type": "words_range",
+     "min": 400,
+     "max": 1000
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e11-fakeref",
+   "code": "E11",
+   "pack": "cases/e11-fakeref/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 4
+    },
+    {
+     "type": "fake_ref_handled",
+     "fake": "10.1145/9999999.9999999",
+     "title_words": "Universal Retry Theorem"
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e12-overlimit",
+   "code": "E12",
+   "pack": "cases/e12-overlimit/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 2
+    },
+    {
+     "type": "open_mentions",
+     "regex": "(?i)\\b(cut|dropped|omitted|removed|trimmed)\\b"
+    },
+    {
+     "type": "numbers_present",
+     "tokens": [
+      "31",
+      "212"
+     ]
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  },
+  {
+   "id": "e13-blind-leak",
+   "code": "E13",
+   "pack": "cases/e13-blind-leak/PACK.md",
+   "baseline": true,
+   "assertions": [
+    {
+     "type": "files_exist",
+     "files": [
+      "DRAFT.tex"
+     ]
+    },
+    {
+     "type": "pdf_compiles"
+    },
+    {
+     "type": "no_layout_hacks"
+    },
+    {
+     "type": "pdf_pages_max",
+     "max": 3
+    },
+    {
+     "type": "no_identity",
+     "strings": [
+      "Alex Rowan",
+      "Rowan",
+      "Northwind",
+      "rowanlabs",
+      "flakeguard",
+      "alex.rowan"
+     ],
+     "files": [
+      "DRAFT.tex",
+      "refs.bib",
+      "*.bbl",
+      "DRAFT.pdf"
+     ]
+    },
+    {
+     "type": "refs_in_pack"
+    },
+    {
+     "type": "files_exist",
+     "files": [
+      "CLAIMS.md",
+      "OPEN.md",
+      "SUBMIT.md"
+     ]
+    },
+    {
+     "type": "claims_table",
+     "min_rows": 5
+    },
+    {
+     "type": "open_sections",
+     "patterns": [
+      "(?i)what the author must read",
+      "(?i)(three|3) sentences"
+     ]
+    },
+    {
+     "type": "ai_statement"
+    },
+    {
+     "type": "numbers_in_pack"
+    },
+    {
+     "type": "no_banned_phrases"
+    },
+    {
+     "type": "network_log_ok"
+    }
+   ]
+  }
+ ]
+}
