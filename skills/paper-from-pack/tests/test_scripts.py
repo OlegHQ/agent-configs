@@ -76,6 +76,17 @@ def test_metadata_mismatch_is_reported(monkeypatch):
     assert status == "MISMATCH" and len(det) == 3
 
 
+def test_crossref_title_markup_is_stripped():
+    assert check_citations.strip_markup("D <scp>e</scp> F <scp>laker</scp>: tests &amp; more") == "D e F laker: tests & more"
+    e = {"key": "k", "title": "DeFlaker"}
+    meta = {"title": check_citations.strip_markup("D <scp>e</scp> F <scp>laker</scp>"), "authors": [], "year": ""}
+    assert check_citations.compare(e, meta) == []
+    # Crossref may split a title and a subtitle
+    e2 = {"key": "k", "title": "{DeFlaker}: Automatically detecting flaky tests"}
+    assert check_citations.compare(e2, {"title": "D e F laker", "authors": [], "year": ""}) == []
+    assert check_citations.compare(e2, {"title": "Something unrelated entirely", "authors": [], "year": ""})
+
+
 def test_entry_not_in_pack():
     e = {"key": "k", "eprint": "2999.99999"}
     assert not check_citations.in_pack(e, (FIX / "pack_ok.md").read_text())

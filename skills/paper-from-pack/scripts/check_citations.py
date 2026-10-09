@@ -80,13 +80,20 @@ def parse_bib(text: str):
     return entries
 
 
+def strip_markup(s: str) -> str:
+    """Crossref titles may carry HTML/JATS markup such as <scp>e</scp>."""
+    import html
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", "", s or "")).split())
+
+
 def clean(s):
     s = re.sub(r"[{}\\]", "", s or "")
     return re.sub(r"\s+", " ", s).strip()
 
 
 def norm_title(s):
-    return re.sub(r"[^a-z0-9 ]", "", clean(s).lower())
+    """Lower-case letters and digits only: robust to spacing damage from markup."""
+    return re.sub(r"[^a-z0-9]", "", clean(s).lower())
 
 
 def first_surname(authors: str):
@@ -125,7 +132,7 @@ def lookup_doi(doi: str):
             yr = str(j[k]["date-parts"][0][0])
             break
     return {
-        "title": " ".join((j.get("title") or [""])[0].split()),
+        "title": strip_markup(" ".join(filter(None, [(j.get("title") or [""])[0], (j.get("subtitle") or [""])[0]]))),
         "authors": [a.get("family", "").lower() for a in j.get("author", [])],
         "year": yr,
         "venue": (j.get("container-title") or [""])[0],
@@ -156,7 +163,9 @@ def lookup_dblp(title: str):
 def compare(entry, meta):
     probs = []
     r = difflib.SequenceMatcher(None, norm_title(entry.get("title", "")), norm_title(meta["title"])).ratio()
-    if r < 0.85:
+    a_, b_ = norm_title(entry.get("title", "")), norm_title(meta["title"])
+    contained = len(min(a_, b_, key=len)) >= 8 and (a_ in b_ or b_ in a_)   # subtitle or acronym differences
+    if r < 0.85 and not contained:
         probs.append(f"title differs (similarity {r:.2f}): bib {clean(entry.get('title'))!r} vs found {meta['title']!r}")
     fs = first_surname(entry.get("author", ""))
     if fs and meta["authors"] and fs not in [a.lower() for a in meta["authors"]]:
