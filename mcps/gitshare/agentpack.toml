@@ -1,0 +1,5 @@
+name = "gitshare"
+version = "0.1.0"
+description = "Gitshare MCP server (remote via mcp.gitshare.me)."
+
+[dependencies]
