@@ -51,7 +51,7 @@ It is plain `SKILL.md` plus scripts and reference files. It uses no hooks, no se
 ## Install with agentpack, pinned to this branch
 
 ```toml
-"github.com/OlegHQ/agent-configs/skills/paper-from-pack" = { ref = "feat/paper-from-pack" }
+"github.com/olegpustovit/agent-configs/skills/paper-from-pack" = { ref = "feat/paper-from-pack" }
 ```
 (After the merge use `ref = "dev"` or a tag.) Check the exact `ref` key spelling against your agentpack version.
 

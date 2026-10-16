@@ -2,7 +2,7 @@
 
 Shared [Cursor](https://cursor.com/docs/plugins.md) / Claude-style plugin trees, **agentpack** packages, and standalone skills for AI-assisted development.
 
-Repository: [github.com/OlegHQ/agent-configs](https://github.com/OlegHQ/agent-configs)
+Repository: [github.com/olegpustovit/agent-configs](https://github.com/olegpustovit/agent-configs)
 
 ## Layout
 
